@@ -1,24 +1,59 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './components/Layout';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
+import LoginPage from './pages/LoginPage';
+import AdminDashboard from './pages/AdminDashboard';
+import HRDashboard from './pages/HRDashboard';
+
+// Student Routes
+import { StudentProvider } from './context/StudentContext';
+import StudentDashboardLayout from './components/StudentDashboardLayout';
 import RoleSelectionPage from './pages/RoleSelectionPage';
-import LearningRoadmapPage from './pages/LearningRoadmapPage';
-import ProjectWorkspacePage from './pages/ProjectWorkspacePage';
-import ReadinessPage from './pages/ReadinessPage';
-import JobBoardPage from './pages/JobBoardPage';
+import OverviewPage from './pages/OverviewPage';
+import LearningPage from './pages/LearningPage';
+import ProjectsPage from './pages/ProjectsPage';
+import ProfilePage from './pages/ProfilePage';
+import OpportunitiesPage from './pages/OpportunitiesPage';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<RoleSelectionPage />} />
-          <Route path="roadmap" element={<LearningRoadmapPage />} />
-          <Route path="project" element={<ProjectWorkspacePage />} />
-          <Route path="readiness" element={<ReadinessPage />} />
-          <Route path="jobs" element={<JobBoardPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Admin Dashboard - Protected */}
+          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
+
+          {/* HR Dashboard - Protected */}
+          <Route element={<ProtectedRoute allowedRoles={['hr']} />}>
+            <Route path="/hr" element={<HRDashboard />} />
+          </Route>
+
+          {/* Student Dashboard - Protected */}
+          <Route element={<ProtectedRoute allowedRoles={['student']} />}>
+            <Route path="/dashboard" element={
+              <StudentProvider>
+                <StudentDashboardLayout />
+              </StudentProvider>
+            }>
+              <Route index element={<OverviewPage />} />
+              <Route path="setup" element={<RoleSelectionPage />} />
+              <Route path="learning" element={<LearningPage />} />
+              <Route path="projects" element={<ProjectsPage />} />
+              <Route path="opportunities" element={<OpportunitiesPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+          </Route>
+          
+          {/* Default Redirects */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

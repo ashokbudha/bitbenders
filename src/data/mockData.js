@@ -93,10 +93,110 @@ export const PROJECTS = {
 };
 
 export const JOBS = [
-  { id: 1, roleId: 'frontend-dev', company: 'Kathmandu Tech Solutions', title: 'Frontend Intern', expectations: 'Knows React basics, eager to learn. Must have 1 portfolio project.' },
-  { id: 2, roleId: 'frontend-dev', company: 'Himalaya Digital', title: 'Junior Frontend Developer', expectations: 'Understands CSS, React, and Git. Good communication skills.' },
-  { id: 3, roleId: 'digital-marketing', company: 'Everest Agencies', title: 'Marketing Intern', expectations: 'Creative, active on social media, willing to learn Meta Ads.' },
-  { id: 4, roleId: 'digital-marketing', company: 'Kathmandu Tech Solutions', title: 'Junior Digital Marketer', expectations: 'Can write basic copy and understand analytics.' },
-  { id: 5, roleId: 'qa-tester', company: 'QualityTech Nepal', title: 'QA Trainee', expectations: 'Attention to detail, knows basic testing concepts.' },
-  { id: 6, roleId: 'qa-tester', company: 'Himalaya Digital', title: 'Junior QA Engineer', expectations: 'Can write clear test cases and bug reports.' },
+  { 
+    id: 1, 
+    roleId: 'frontend-dev', 
+    company: 'Kathmandu Tech Solutions', 
+    title: 'Frontend Intern', 
+    type: 'internship', // internship, trainee, junior
+    location: 'Kathmandu (Onsite)',
+    expectations: 'Knows React basics, eager to learn. Must have 1 portfolio project.',
+    requirements: {
+      courses: [1, 2], // HTML/CSS and JS
+      projects: 0, // No full capstone required
+      skills: ['HTML', 'CSS', 'JavaScript']
+    }
+  },
+  { 
+    id: 2, 
+    roleId: 'frontend-dev', 
+    company: 'Himalaya Digital', 
+    title: 'Junior Frontend Developer', 
+    type: 'junior',
+    location: 'Lalitpur (Hybrid)',
+    expectations: 'Understands CSS, React, and Git. Good communication skills.',
+    requirements: {
+      courses: [1, 2, 3, 4], // Full roadmap
+      projects: 1, // Capstone required
+      skills: ['React', 'Git', 'Responsive Design']
+    }
+  },
+  { 
+    id: 3, 
+    roleId: 'digital-marketing', 
+    company: 'Everest Agencies', 
+    title: 'Marketing Trainee', 
+    type: 'trainee',
+    location: 'Remote',
+    expectations: 'Creative, active on social media, willing to learn Meta Ads.',
+    requirements: {
+      courses: [1], // Social Media
+      projects: 0,
+      skills: ['Social Media', 'Communication']
+    }
+  },
+  { 
+    id: 4, 
+    roleId: 'digital-marketing', 
+    company: 'Kathmandu Tech Solutions', 
+    title: 'Junior Digital Marketer', 
+    type: 'junior',
+    location: 'Kathmandu (Onsite)',
+    expectations: 'Can write basic copy and understand analytics.',
+    requirements: {
+      courses: [1, 2, 3, 4],
+      projects: 1,
+      skills: ['Meta Ads', 'SEO', 'Analytics']
+    }
+  },
+  { 
+    id: 5, 
+    roleId: 'qa-tester', 
+    company: 'QualityTech Nepal', 
+    title: 'QA Intern', 
+    type: 'internship',
+    location: 'Pokhara (Hybrid)',
+    expectations: 'Attention to detail, knows basic testing concepts.',
+    requirements: {
+      courses: [1, 2],
+      projects: 0,
+      skills: ['Manual Testing', 'Test Cases']
+    }
+  },
+];
+
+export const MOCK_STUDENTS = [
+  {
+    id: 's1',
+    name: 'Aayush Sharma',
+    careerPath: 'frontend-dev',
+    location: 'Kathmandu',
+    availabilityStatus: 'Actively looking',
+    completedCourses: [1, 2, 3, 4],
+    completedProjects: [{ id: 'frontend-dev', link: 'github.com/aayush' }],
+    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Git'],
+    portfolioUrl: 'aayush.dev'
+  },
+  {
+    id: 's2',
+    name: 'Pooja Thapa',
+    careerPath: 'frontend-dev',
+    location: 'Lalitpur',
+    availabilityStatus: 'Actively looking',
+    completedCourses: [1, 2],
+    completedProjects: [],
+    skills: ['HTML', 'CSS', 'JavaScript'],
+    portfolioUrl: null
+  },
+  {
+    id: 's3',
+    name: 'Bikash Nepal',
+    careerPath: 'digital-marketing',
+    location: 'Remote',
+    availabilityStatus: 'Open to offers',
+    completedCourses: [1, 2, 3],
+    completedProjects: [{ id: 'digital-marketing', link: 'drive.google.com/bikash' }],
+    skills: ['Social Media', 'Meta Ads', 'SEO'],
+    portfolioUrl: null
+  }
 ];

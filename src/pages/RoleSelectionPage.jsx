@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../data/mockData';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { useStudent } from '../context/StudentContext';
 
 export default function RoleSelectionPage() {
   const navigate = useNavigate();
-  const [selectedRole, setSelectedRole] = useState(null);
+  const { careerPath, updateCareerPath } = useStudent();
+  const [selectedRole, setSelectedRole] = useState(careerPath || null);
 
   const handleSelectRole = (roleId) => {
     setSelectedRole(roleId);
@@ -14,16 +16,15 @@ export default function RoleSelectionPage() {
   const handleConfirmRole = () => {
     if (!selectedRole) return;
     
-    // Save state
-    localStorage.setItem('student_role', selectedRole);
+    // Save state using context
+    updateCareerPath(selectedRole);
     
-    // Redirect with confirmation
-    alert("You'll follow one guided path. You can switch later, but not now.");
-    navigate('/roadmap');
+    // Redirect to dashboard overview
+    navigate('/dashboard');
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-extrabold text-slate-900 mb-4">Choose Your Career Path</h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">

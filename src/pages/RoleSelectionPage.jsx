@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ROLES } from '../data/mockData';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Compass } from 'lucide-react';
 import { useStudent } from '../context/StudentContext';
 
 export default function RoleSelectionPage() {
@@ -24,15 +24,15 @@ export default function RoleSelectionPage() {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-extrabold text-slate-900 mb-4">Choose Your Career Path</h1>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto py-8">
+      <div className="mb-10 text-center">
+        <h1 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Choose Your Skill Path</h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-          Select ONE realistic industry role to start your journey. No quizzes, no AI guessing. Just pick the one that matches your current interest and commit to learning it.
+          Start your journey by selecting a realistic industry role. Your dashboard, learning roadmap, and capstone projects will be personalized for this path.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-10">
         {ROLES.map((role) => (
           <div 
             key={role.id}
@@ -50,37 +50,22 @@ export default function RoleSelectionPage() {
             )}
             
             <div className="p-6 flex-1">
-              <h2 className="text-xl font-bold text-slate-900 mb-2">{role.title}</h2>
-              <p className="text-sm text-slate-600 mb-6">{role.dayToDay}</p>
+              <h2 className="text-xl font-bold text-slate-900 mb-2 pr-8">{role.title}</h2>
+              <p className="text-sm text-slate-600 mb-4 line-clamp-2">{role.dayToDay}</p>
 
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Example Tasks</h3>
-                  <ul className="space-y-2">
-                    {role.exampleTasks.map((task, i) => (
-                      <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0" />
-                        <span>{task}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Expectations</h3>
-                  <p className="text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    {role.expectations}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-rose-500 mb-2 flex items-center gap-1">
-                    <XCircle className="w-3.5 h-3.5" />
-                    Not For
-                  </h3>
-                  <p className="text-sm text-slate-600 italic">
-                    "{role.notFor}"
-                  </p>
+              <div className="space-y-2 mb-4">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">Key Skills</h3>
+                <div className="flex flex-wrap gap-2">
+                  {role.reqSkills?.slice(0, 3).map((skill, i) => (
+                    <span key={i} className="text-xs font-medium bg-slate-100 text-slate-700 px-2 py-1 rounded-md">
+                      {skill}
+                    </span>
+                  ))}
+                  {role.reqSkills?.length > 3 && (
+                    <span className="text-xs font-medium bg-slate-100 text-slate-500 px-2 py-1 rounded-md">
+                      +{role.reqSkills.length - 3} more
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -89,18 +74,33 @@ export default function RoleSelectionPage() {
               {selectedRole === role.id ? (
                 <button
                   onClick={handleConfirmRole}
-                  className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-sm"
+                  className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
                 >
-                  Confirm & Start Learning
+                  Start Learning <ArrowRight className="w-4 h-4" />
                 </button>
               ) : (
                 <button className="w-full py-3 px-4 bg-slate-50 text-slate-600 font-medium rounded-xl border border-slate-200 transition-colors pointer-events-none">
-                  Select this role
+                  Select this path
                 </button>
               )}
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex flex-col items-center justify-center p-8 bg-indigo-50/50 rounded-3xl border border-indigo-100 text-center">
+        <Compass className="w-12 h-12 text-indigo-400 mb-4" />
+        <h3 className="text-xl font-bold text-slate-900 mb-2">Not sure which path to pick?</h3>
+        <p className="text-slate-600 mb-6 max-w-lg">
+          Don't worry! Choosing a career path can be overwhelming. Take some time to explore the different roles, responsibilities, and required skills to find the perfect fit for you.
+        </p>
+        <Link 
+          to="/dashboard/explore" 
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-indigo-700 hover:bg-indigo-50 font-bold rounded-xl border border-indigo-200 transition-colors shadow-sm"
+        >
+          Still confused? Let's explore
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </div>
   );

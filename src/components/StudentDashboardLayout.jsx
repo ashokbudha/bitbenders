@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Briefcase, User, GraduationCap } from 'lucide-react';
 import { useStudent } from '../context/StudentContext';
 import { useAuth } from '../context/AuthContext';
@@ -16,11 +16,18 @@ export default function StudentDashboardLayout() {
   const { careerPath } = useStudent();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
+
+  // If no career path is selected, force user into the setup or explore views
+  const isSetupOrExplore = location.pathname === '/dashboard/setup' || location.pathname === '/dashboard/explore';
+  if (!careerPath && !isSetupOrExplore) {
+    return <Navigate to="/dashboard/setup" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
@@ -32,23 +39,29 @@ export default function StudentDashboardLayout() {
         </div>
 
         <nav className="flex-1 px-4 space-y-2 mt-4">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/dashboard'}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
-                  isActive 
-                    ? 'bg-indigo-50 text-indigo-700' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`
-              }
-            >
-              <item.icon className="w-5 h-5" />
-              {item.name}
-            </NavLink>
-          ))}
+          {careerPath ? (
+            navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === '/dashboard'}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
+                    isActive 
+                      ? 'bg-indigo-50 text-indigo-700' 
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`
+                }
+              >
+                <item.icon className="w-5 h-5" />
+                {item.name}
+              </NavLink>
+            ))
+          ) : (
+            <div className="px-4 py-6 text-center border-2 border-dashed border-slate-200 rounded-xl mt-4">
+              <p className="text-slate-500 text-sm font-medium">Please select a career path to unlock your dashboard.</p>
+            </div>
+          )}
         </nav>
 
         <div className="p-6 border-t border-slate-200">

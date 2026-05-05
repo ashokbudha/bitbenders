@@ -10,6 +10,7 @@ import HRDashboard from './pages/HRDashboard';
 import { StudentProvider } from './context/StudentContext';
 import StudentDashboardLayout from './components/StudentDashboardLayout';
 import RoleSelectionPage from './pages/RoleSelectionPage';
+import CareerExplorerPage from './pages/CareerExplorerPage';
 import OverviewPage from './pages/OverviewPage';
 import LearningPage from './pages/LearningPage';
 import ProjectsPage from './pages/ProjectsPage';
@@ -42,6 +43,7 @@ function App() {
             }>
               <Route index element={<OverviewPage />} />
               <Route path="setup" element={<RoleSelectionPage />} />
+              <Route path="explore" element={<CareerExplorerPage />} />
               <Route path="learning" element={<LearningPage />} />
               <Route path="projects" element={<ProjectsPage />} />
               <Route path="opportunities" element={<OpportunitiesPage />} />

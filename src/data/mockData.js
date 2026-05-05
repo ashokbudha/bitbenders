@@ -10,6 +10,48 @@ export const ROLES = [
     ],
     expectations: 'Solid grasp of HTML/CSS/JS, basic React knowledge, and eagerness to learn.',
     notFor: 'People who prefer dealing with databases, servers, or hate visual design.',
+    reqSkills: ['HTML/CSS', 'JavaScript', 'React', 'Git'],
+    softSkills: ['Attention to detail', 'Visual awareness', 'Empathy for user experience'],
+    tools: ['VS Code', 'Chrome DevTools', 'Figma (Viewer)'],
+    fit: 'You enjoy seeing visual results immediately and love building interactive elements.',
+    exampleProjects: ['Portfolio website', 'Weather dashboard', 'E-commerce product page'],
+    opportunities: ['Frontend Intern', 'Junior React Developer', 'Freelance Web Developer']
+  },
+  {
+    id: 'backend-dev',
+    title: 'Backend Developer (Node.js)',
+    dayToDay: 'Creating APIs, managing databases, and ensuring server logic runs securely and smoothly.',
+    exampleTasks: [
+      'Build a secure login and authentication system',
+      'Design database tables and relationships',
+      'Optimize slow data queries'
+    ],
+    expectations: 'Logical thinking, strong problem-solving skills, and comfortable working without a graphical interface.',
+    notFor: 'People who need visual feedback for everything they build.',
+    reqSkills: ['Node.js', 'Express', 'SQL/NoSQL', 'API Design'],
+    softSkills: ['Logical thinking', 'System design', 'Security awareness'],
+    tools: ['Postman', 'Docker', 'Database IDEs'],
+    fit: 'You like organizing data, solving logical puzzles, and making things work efficiently behind the scenes.',
+    exampleProjects: ['Task management API', 'User authentication system', 'Database schema design'],
+    opportunities: ['Backend Intern', 'Junior API Developer', 'Node.js Trainee']
+  },
+  {
+    id: 'ui-ux',
+    title: 'UI/UX Designer',
+    dayToDay: 'Designing wireframes, prototyping user journeys, and ensuring the product is easy to use.',
+    exampleTasks: [
+      'Create high-fidelity screens in Figma',
+      'Map out the user flow for a checkout process',
+      'Interview users to find usability issues'
+    ],
+    expectations: 'Strong visual intuition, deep empathy for users, and willingness to iterate based on feedback.',
+    notFor: 'People who want to write code or dislike talking to users.',
+    reqSkills: ['User Research', 'Wireframing', 'Prototyping', 'Visual Design'],
+    softSkills: ['Empathy', 'Communication', 'Open to critique'],
+    tools: ['Figma', 'Miro', 'Notion'],
+    fit: 'You have a good eye for aesthetics and care deeply about how users feel when using an app.',
+    exampleProjects: ['Food delivery app prototype', 'Landing page redesign', 'Design system setup'],
+    opportunities: ['UI/UX Intern', 'Junior Product Designer', 'Freelance Designer']
   },
   {
     id: 'digital-marketing',
@@ -22,6 +64,12 @@ export const ROLES = [
     ],
     expectations: 'Understands social platforms, basic copywriting skills, and comfortable with numbers.',
     notFor: 'People who dislike writing, communication, or tracking metrics.',
+    reqSkills: ['Copywriting', 'SEO', 'Meta Ads', 'Analytics'],
+    softSkills: ['Creativity', 'Data-driven mindset', 'Adaptability'],
+    tools: ['Meta Business Suite', 'Google Analytics', 'Canva'],
+    fit: 'You are creative, understand trends, and like measuring the success of your campaigns.',
+    exampleProjects: ['Social media content calendar', 'Mock ad campaign', 'SEO audit report'],
+    opportunities: ['Marketing Intern', 'SEO Executive', 'Social Media Trainee']
   },
   {
     id: 'qa-tester',
@@ -34,6 +82,12 @@ export const ROLES = [
     ],
     expectations: 'High attention to detail, structured thinking, and clear written communication.',
     notFor: 'People who dislike repetitive tasks or lack patience.',
+    reqSkills: ['Test Planning', 'Bug Reporting', 'Agile Methodologies'],
+    softSkills: ['Attention to detail', 'Patience', 'Clear communication'],
+    tools: ['Jira', 'Postman', 'TestRail'],
+    fit: 'You have a knack for finding flaws, breaking things systematically, and documenting issues.',
+    exampleProjects: ['Checkout flow test plan', 'API testing suite', 'Detailed bug report logs'],
+    opportunities: ['QA Intern', 'Junior QA Tester', 'Manual Testing Trainee']
   },
 ];
 
@@ -43,6 +97,18 @@ export const ROADMAPS = {
     { id: 2, title: 'JavaScript Fundamentals', why: 'To make websites interactive and handle logic.', output: 'A working to-do list app.' },
     { id: 3, title: 'React Basics', why: 'Most modern Nepali tech companies use React for frontends.', output: 'A simple weather app fetching from an API.' },
     { id: 4, title: 'Git & GitHub', why: 'To collaborate with other developers safely.', output: 'Pushing your projects to GitHub.' },
+  ],
+  'backend-dev': [
+    { id: 1, title: 'JavaScript/Node.js Basics', why: 'The foundation of running JS on the server.', output: 'A basic console application.' },
+    { id: 2, title: 'Express & REST APIs', why: 'To create endpoints that frontends can consume.', output: 'A simple CRUD API.' },
+    { id: 3, title: 'Database Fundamentals', why: 'To persist data permanently.', output: 'Connecting the API to a database.' },
+    { id: 4, title: 'Authentication & Security', why: 'To protect user data.', output: 'Adding login/signup to the API.' },
+  ],
+  'ui-ux': [
+    { id: 1, title: 'Design Principles & Typography', why: 'The core of making interfaces look good.', output: 'A style guide document.' },
+    { id: 2, title: 'Figma Basics', why: 'The industry standard tool for UI design.', output: 'A recreated popular app screen.' },
+    { id: 3, title: 'User Flows & Wireframing', why: 'To plan how users move through an app.', output: 'Low-fidelity wireframes for an app.' },
+    { id: 4, title: 'Prototyping', why: 'To make designs interactive for testing.', output: 'A clickable prototype in Figma.' },
   ],
   'digital-marketing': [
     { id: 1, title: 'Social Media Management', why: 'Core channel for most Nepali businesses.', output: '1-month content calendar.' },
@@ -68,6 +134,26 @@ export const PROJECTS = {
       { id: 2, instruction: 'Style the product details (Title, Price, Description) based on a simple design.', outcome: 'Text looks good and is readable.' },
       { id: 3, instruction: 'Build an image gallery where clicking a thumbnail changes the main image.', outcome: 'Working image gallery.' },
       { id: 4, instruction: 'Make the page responsive for mobile phones.', outcome: 'Looks good on small screens.' },
+    ]
+  },
+  'backend-dev': {
+    title: 'Task Management API',
+    why: 'Every company needs internal tools. Building a secure API with relationships is a common requirement.',
+    goodEnough: 'A working REST API with authentication and CRUD operations for tasks and users.',
+    tasks: [
+      { id: 1, instruction: 'Set up an Express server and define routes.', outcome: 'Server running with empty endpoints.' },
+      { id: 2, instruction: 'Connect to a database and create models.', outcome: 'Database schema established.' },
+      { id: 3, instruction: 'Implement JWT authentication.', outcome: 'Secure login and registration.' },
+    ]
+  },
+  'ui-ux': {
+    title: 'Food Delivery App Redesign',
+    why: 'Agencies look for designers who can improve existing experiences and create polished mobile UI.',
+    goodEnough: 'A complete Figma file with a 3-screen interactive prototype.',
+    tasks: [
+      { id: 1, instruction: 'Audit an existing app and sketch wireframes.', outcome: 'Wireframes ready.' },
+      { id: 2, instruction: 'Design high-fidelity screens using a component library.', outcome: 'Beautiful UI screens.' },
+      { id: 3, instruction: 'Link screens together in a prototype.', outcome: 'Clickable prototype.' },
     ]
   },
   'digital-marketing': {

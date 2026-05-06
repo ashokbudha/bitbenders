@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ROLES, ROADMAPS, PROJECTS } from '../../data/mockData';
+import { ROLES, ROADMAPS, PROJECT_LIBRARY } from '../../data/mockData';
 import { BookOpen, Map, Briefcase, Plus, Edit2, Trash2 } from 'lucide-react';
 
 export default function AdminContent() {
@@ -94,21 +94,21 @@ export default function AdminContent() {
 
         {activeSubTab === 'projects' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Object.entries(PROJECTS).map(([pathId, project]) => (
-              <div key={pathId} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            {PROJECT_LIBRARY.map((project) => (
+              <div key={project.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex justify-between items-start mb-4">
                   <span className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md text-xs font-bold capitalize mb-2 inline-block">
-                    {pathId.replace('-', ' ')} Capstone
+                    {project.careerPath.replace('-', ' ')} {project.type}
                   </span>
                   <div className="flex gap-2">
                     <button className="text-indigo-600 hover:text-indigo-800 font-medium text-xs">Edit Rules</button>
                   </div>
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{project.title}</h3>
-                <p className="text-sm text-slate-600 mb-4">{project.why}</p>
+                <p className="text-sm text-slate-600 mb-4">{project.shortDescription}</p>
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                   <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Unlock Criteria</h4>
-                  <p className="text-sm font-medium text-slate-700">Must complete all {ROADMAPS[pathId]?.length || 0} courses in the {pathId} roadmap.</p>
+                  <p className="text-sm font-medium text-slate-700">Must complete all {ROADMAPS[project.careerPath]?.length || 0} courses in the {project.careerPath} roadmap.</p>
                 </div>
               </div>
             ))}

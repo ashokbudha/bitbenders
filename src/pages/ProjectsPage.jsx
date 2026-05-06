@@ -1,106 +1,388 @@
-import { useStudent } from '../context/StudentContext';
-import { PROJECTS, ROADMAPS } from '../data/mockData';
-import { Lock, Unlock, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
+import { useStudent } from '../context/StudentContext';
+import { PROJECT_LIBRARY, CAPSTONE_IDEAS } from '../data/mockData';
+import { Target, Layout, Rocket, Trophy, Star, CheckCircle, ArrowRight, Lightbulb, Play, BookOpen, PenTool, CheckSquare, ShieldCheck, Lock } from 'lucide-react';
 
 export default function ProjectsPage() {
-  const { careerPath, completedCourses, completedProjects, completeProject } = useStudent();
-  const [link, setLink] = useState('');
-  
+  const { careerPath, completedCourses, completedProjects, completeProject, activeProjectState, updateProjectState, capstoneProposal, updateCapstoneProposal } = useStudent();
+  const [activeTab, setActiveTab] = useState('library');
+  const [activeProjectView, setActiveProjectView] = useState(null); // ID of project currently viewing/building
+  const [capstoneView, setCapstoneView] = useState('intro'); // 'intro', 'ideas', 'proposal', 'building'
+
   if (!careerPath) return <div className="p-8 text-center text-slate-500">Please select a career path first.</div>;
-  
-  // Find project
-  const project = PROJECTS[careerPath];
-  const requiredCourses = ROADMAPS[careerPath] || [];
-  
-  // Critical Gating Logic
-  const hasCompletedAllCourses = requiredCourses.every(c => completedCourses.includes(c.id));
-  const hasSubmittedProject = completedProjects.some(p => p.id === project.id);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (link.trim()) {
-      completeProject(project.id, link, "Completed via Dashboard");
-      setLink('');
-    }
-  };
+  const myProjects = PROJECT_LIBRARY.filter(p => p.careerPath === careerPath);
+  const myIdeas = CAPSTONE_IDEAS.filter(p => p.careerPath === careerPath);
 
-  return (
-    <div className="animate-in fade-in duration-500">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Projects</h1>
-        <p className="text-slate-600">Build real-world projects to validate your skills.</p>
-      </div>
+  // --- REUSED: PROJECT LAUNCHPAD (The multi-stage builder from previous phase) ---
+  const ProjectLaunchpad = ({ projectId, onBack }) => {
+    const project = PROJECT_LIBRARY.find(p => p.id === projectId);
+    const state = activeProjectState[projectId] || {};
+    const isCompleted = completedProjects.some(p => p.id === projectId);
+    const stage = isCompleted ? 'completed' : (state.stage || 'recommendation');
 
-      <div className={`relative overflow-hidden rounded-3xl border-2 p-8 ${
-        hasCompletedAllCourses ? 'bg-white border-indigo-200 shadow-lg' : 'bg-slate-50 border-slate-200'
-      }`}>
-        
-        {/* Lock Overlay */}
-        {!hasCompletedAllCourses && (
-          <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-sm flex flex-col items-center justify-center z-10">
-            <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-sm text-center border border-slate-200">
-              <div className="bg-rose-100 p-4 rounded-full mb-4">
-                <Lock className="w-8 h-8 text-rose-600" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Project Locked</h3>
-              <p className="text-slate-600 text-sm mb-4">
-                You must complete all {requiredCourses.length} learning modules before you can access this project.
-              </p>
-              <div className="w-full bg-slate-100 rounded-lg p-3 text-left">
-                <p className="text-xs font-bold uppercase text-slate-500 mb-2">Missing prerequisites:</p>
-                <ul className="text-sm space-y-1">
-                  {requiredCourses.filter(c => !completedCourses.includes(c.id)).map(c => (
-                    <li key={c.id} className="text-rose-600 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                      {c.title}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+    const setStage = (s) => updateProjectState(projectId, { stage: s });
+
+    const renderRecommendation = () => (
+      <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm animate-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 text-sm font-bold rounded-full mb-4">
+            <Target className="w-4 h-4" /> {project.type === 'mini' ? 'Mini Project' : 'Guided Project'}
           </div>
-        )}
-
-        <div className={!hasCompletedAllCourses ? 'opacity-40 pointer-events-none blur-sm transition-all' : ''}>
-          <div className="flex items-center gap-3 mb-6">
-            <div className={`p-3 rounded-xl ${hasSubmittedProject ? 'bg-green-100 text-green-600' : 'bg-indigo-100 text-indigo-600'}`}>
-              {hasSubmittedProject ? <CheckCircle className="w-6 h-6" /> : <Unlock className="w-6 h-6" />}
+          <h2 className="text-3xl font-extrabold mb-2">{project.title}</h2>
+          <p className="text-indigo-100">{project.shortDescription}</p>
+        </div>
+        <div className="p-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="font-bold text-slate-900 mb-2">Skills Proved</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.skillsUsed.map(s => <span key={s} className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium">{s}</span>)}
+              </div>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">{project.title}</h2>
-              <span className="text-sm font-semibold text-slate-500">Capstone Project</span>
+              <h3 className="font-bold text-slate-900 mb-2">Why build this?</h3>
+              <p className="text-slate-600 text-sm">{project.proves}</p>
             </div>
           </div>
-
-          <div className="bg-slate-50 p-6 rounded-2xl mb-8 border border-slate-200">
-            <h3 className="font-bold text-slate-800 mb-2">Why it matters</h3>
-            <p className="text-slate-600 text-sm">{project.why}</p>
-          </div>
-
-          {!hasSubmittedProject ? (
-            <form onSubmit={handleSubmit} className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
-              <h3 className="font-bold text-indigo-900 mb-4">Submit Your Work</h3>
-              <input
-                type="url"
-                required
-                placeholder="https://github.com/... or live link"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none mb-4"
-              />
-              <button type="submit" className="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-md hover:bg-indigo-700 transition">
-                Submit Project for Review
-              </button>
-            </form>
-          ) : (
-            <div className="bg-green-50 border border-green-200 p-6 rounded-2xl text-center">
-              <h3 className="font-bold text-green-800 mb-2">Project Completed!</h3>
-              <p className="text-green-700 text-sm">Your work has been added to your professional CV.</p>
-            </div>
-          )}
+          <button onClick={() => setStage('blueprint')} className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all">
+            Start Project <ArrowRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
+    );
+
+    const renderBlueprint = () => (
+      <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+        <h2 className="text-2xl font-extrabold text-slate-900 mb-6">Project Blueprint</h2>
+        <div className="bg-slate-50 p-6 rounded-2xl mb-8">
+          <h3 className="font-bold text-slate-800 mb-2">Goal</h3>
+          <p className="text-slate-700">{project.blueprint?.goal || project.shortDescription}</p>
+        </div>
+        <button onClick={() => setStage('building')} className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl">
+          Enter Workspace
+        </button>
+      </div>
+    );
+
+    const renderMilestones = () => {
+      const completed = state.completedMilestones || [];
+      const progress = project.milestones ? Math.round((completed.length / project.milestones.length) * 100) : 0;
+      
+      const toggleMilestone = (mId) => {
+        const updated = completed.includes(mId) ? completed.filter(id => id !== mId) : [...completed, mId];
+        updateProjectState(projectId, { completedMilestones: updated });
+      };
+
+      return (
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="flex justify-between items-end mb-6">
+            <h2 className="text-2xl font-bold">Project Builder</h2>
+            <span className="text-2xl font-bold text-indigo-600">{progress}%</span>
+          </div>
+          <div className="w-full bg-slate-200 h-2 rounded-full mb-8"><div className="bg-indigo-600 h-full transition-all" style={{width: `${Number(progress)||0}%`}}></div></div>
+          
+          <div className="space-y-4">
+            {project.milestones?.map((m, i) => (
+              <div key={m.id} className="border border-slate-200 p-4 rounded-xl flex items-start gap-4">
+                <button onClick={() => toggleMilestone(m.id)} className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 ${completed.includes(m.id) ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 text-transparent'}`}>
+                  <CheckCircle className="w-4 h-4" />
+                </button>
+                <div>
+                  <h3 className={`font-bold ${completed.includes(m.id) ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{i+1}. {m.title}</h3>
+                  <p className="text-sm text-slate-600 mt-1">{m.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={() => setStage('showcase')} disabled={progress < 100} className={`w-full mt-8 py-4 font-bold rounded-xl ${progress === 100 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-400'}`}>
+            Final Review & Showcase
+          </button>
+        </div>
+      );
+    };
+
+    const renderShowcase = () => {
+      const [link, setLink] = useState('');
+      return (
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 text-center">
+          <Trophy className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-6">Submit to Portfolio</h2>
+          <input type="url" placeholder="GitHub or Live URL" className="w-full p-4 rounded-xl border border-slate-200 mb-4" value={link} onChange={e => setLink(e.target.value)} />
+          <button onClick={() => { if(link) completeProject(projectId, link, 'Completed'); }} className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl">Submit</button>
+        </div>
+      );
+    };
+
+    return (
+      <div className="max-w-4xl mx-auto animate-in slide-in-from-right-8 duration-500">
+        <button onClick={onBack} className="text-slate-500 hover:text-indigo-600 font-medium mb-6 flex items-center gap-2">← Back to Projects</button>
+        {stage === 'recommendation' && renderRecommendation()}
+        {stage === 'blueprint' && renderBlueprint()}
+        {stage === 'building' && renderMilestones()}
+        {stage === 'showcase' && renderShowcase()}
+        {stage === 'completed' && (
+          <div className="bg-emerald-50 p-10 rounded-3xl text-center border border-emerald-200">
+            <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-emerald-900 mb-2">Project Completed!</h2>
+            <p className="text-emerald-700 mb-6">Added to your professional profile.</p>
+            <button onClick={onBack} className="px-6 py-3 bg-emerald-600 text-white font-bold rounded-xl">Return to Library</button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // --- TABS RENDERING ---
+
+  const renderLibrary = () => (
+    <div className="animate-in fade-in duration-500">
+      <div className="mb-8">
+        <h2 className="text-2xl font-extrabold text-slate-900">Project Library</h2>
+        <p className="text-slate-600">Browse and start practice projects to build your skills.</p>
+      </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {myProjects.map(proj => {
+          const isCompleted = completedProjects.some(p => p.id === proj.id);
+          const state = activeProjectState[proj.id];
+          const isStarted = !!state;
+          const hasPrereqs = proj.prerequisites?.every(c => completedCourses.includes(c)) ?? true;
+
+          return (
+            <div key={proj.id} className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col hover:shadow-lg transition-all relative overflow-hidden group">
+              {!hasPrereqs && (
+                <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="bg-white p-4 rounded-xl shadow-xl flex items-center gap-3">
+                    <Lock className="text-rose-500 w-5 h-5" />
+                    <span className="text-sm font-bold text-slate-800">Complete prior courses</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex justify-between items-start mb-4">
+                <span className={`text-xs font-bold uppercase px-2.5 py-1 rounded-md ${proj.type === 'mini' ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
+                  {proj.type}
+                </span>
+                {isCompleted && <ShieldCheck className="text-emerald-500 w-5 h-5" />}
+              </div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2">{proj.title}</h3>
+              <p className="text-sm text-slate-600 mb-4 flex-1">{proj.shortDescription}</p>
+              
+              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                <span className="text-xs font-medium text-slate-500">{proj.estimatedTime}</span>
+                <button 
+                  disabled={!hasPrereqs}
+                  onClick={() => setActiveProjectView(proj.id)}
+                  className={`text-sm font-bold flex items-center gap-1 ${!hasPrereqs ? 'text-slate-400' : isCompleted ? 'text-emerald-600' : isStarted ? 'text-indigo-600' : 'text-slate-800 hover:text-indigo-600'}`}
+                >
+                  {isCompleted ? 'Review' : isStarted ? 'Continue' : 'Start'} <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const renderCapstone = () => {
+    // Determine Capstone Status
+    const capstoneCompleted = completedProjects.some(p => p.id === 'capstone');
+    const capstoneState = activeProjectState['capstone'] || {};
+    const proposal = capstoneProposal;
+
+    const currentCapstoneView = capstoneCompleted ? 'completed' : (capstoneState.stage === 'building' ? 'building' : capstoneView);
+
+    if (currentCapstoneView === 'intro') {
+      return (
+        <div className="bg-slate-900 text-white rounded-3xl overflow-hidden shadow-xl animate-in slide-in-from-bottom-4">
+          <div className="p-12 md:p-16 text-center">
+            <div className="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-indigo-500/50">
+              <Trophy className="w-10 h-10 text-indigo-400" />
+            </div>
+            <h2 className="text-4xl font-extrabold mb-4">The Final Capstone</h2>
+            <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-10">
+              This is the ultimate proof of your readiness. Unlike practice projects, the capstone is a major, portfolio-defining application. You can choose a recommended idea or propose your own custom project.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button onClick={() => setCapstoneView('ideas')} className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl transition-all">
+                View Recommended Ideas
+              </button>
+              <button onClick={() => setCapstoneView('proposal')} className="px-8 py-4 bg-transparent border-2 border-slate-600 hover:border-slate-400 font-bold rounded-xl transition-all">
+                Submit Custom Proposal
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (currentCapstoneView === 'ideas') {
+      return (
+        <div className="animate-in fade-in duration-500">
+          <button onClick={() => setCapstoneView('intro')} className="text-slate-500 hover:text-indigo-600 font-medium mb-6 flex items-center gap-2">← Back</button>
+          <div className="mb-8">
+            <h2 className="text-2xl font-extrabold text-slate-900">Recommended Capstones</h2>
+            <p className="text-slate-600">Curated ideas with high employability value.</p>
+          </div>
+          <div className="space-y-6">
+            {myIdeas.map(idea => (
+              <div key={idea.id} className="bg-white border-2 border-slate-200 rounded-2xl p-8 hover:border-indigo-400 transition-all flex flex-col md:flex-row justify-between gap-6">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{idea.title}</h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {idea.skillsProved.map(s => <span key={s} className="text-xs font-bold bg-indigo-50 text-indigo-700 px-2 py-1 rounded">{s}</span>)}
+                  </div>
+                  <p className="text-slate-600 text-sm mb-2"><span className="font-bold text-slate-800">Why it fits:</span> {idea.whyFits}</p>
+                  <p className="text-slate-600 text-sm"><span className="font-bold text-slate-800">Hiring value:</span> {idea.hiringValue}</p>
+                </div>
+                <div className="shrink-0 flex items-center">
+                  <button onClick={() => {
+                    updateCapstoneProposal({ title: idea.title, type: 'recommended', status: 'approved' });
+                    updateProjectState('capstone', { stage: 'building' });
+                  }} className="w-full md:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl">
+                    Select & Start
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (currentCapstoneView === 'proposal') {
+      return (
+        <div className="max-w-3xl mx-auto bg-white p-10 rounded-3xl border border-slate-200 shadow-sm animate-in fade-in duration-500">
+          <button onClick={() => setCapstoneView('intro')} className="text-slate-500 hover:text-indigo-600 font-medium mb-6 flex items-center gap-2">← Back</button>
+          <div className="mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 mb-4"><PenTool className="w-6 h-6" /></div>
+            <h2 className="text-2xl font-extrabold text-slate-900">Custom Capstone Proposal</h2>
+            <p className="text-slate-600">Pitch your own final project. We will validate the scope to ensure it's not too small or impossibly large.</p>
+          </div>
+
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            // Simulate instant auto-approval for MVP
+            updateCapstoneProposal({ ...data, type: 'custom', status: 'approved' });
+            updateProjectState('capstone', { stage: 'building' });
+          }} className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Project Title</label>
+              <input name="title" required className="w-full p-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none" placeholder="e.g. HealthTracker App" />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">What problem does it solve?</label>
+              <textarea name="problem" required rows={3} className="w-full p-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none resize-none" placeholder="Explain why this needs to exist..."></textarea>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Core Features (Scope)</label>
+              <textarea name="features" required rows={3} className="w-full p-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none resize-none" placeholder="1. User Auth\n2. Dashboard View\n..."></textarea>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Why does this fit your career path?</label>
+              <input name="relevance" required className="w-full p-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none" placeholder="It proves I can handle..." />
+            </div>
+            <div className="pt-4 border-t border-slate-100">
+              <button type="submit" className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-md hover:bg-indigo-700">Submit Proposal for Approval</button>
+            </div>
+          </form>
+        </div>
+      );
+    }
+
+    if (currentCapstoneView === 'building') {
+      // Re-use a simplified milestone flow for capstone
+      const setStage = (s) => updateProjectState('capstone', { stage: s });
+      const stage = capstoneState.stage || 'building';
+
+      if (stage === 'showcase') {
+        const [link, setLink] = useState('');
+        return (
+          <div className="max-w-2xl mx-auto bg-white p-10 rounded-3xl border border-slate-200 text-center shadow-sm">
+            <Trophy className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
+            <h2 className="text-3xl font-extrabold mb-4">Submit Capstone</h2>
+            <p className="text-slate-600 mb-8">This is the final step. Ensure your GitHub repo is public and the live link works.</p>
+            <input type="url" placeholder="https://github.com/..." className="w-full p-4 rounded-xl border border-slate-200 mb-4 outline-none focus:border-indigo-500" value={link} onChange={e => setLink(e.target.value)} required />
+            <button onClick={() => { if(link) completeProject('capstone', link, proposal.title); }} className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800">Finalize Capstone</button>
+          </div>
+        );
+      }
+
+      return (
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-indigo-900 text-white p-8 rounded-3xl mb-8 flex justify-between items-center shadow-lg">
+            <div>
+              <div className="text-indigo-300 text-sm font-bold uppercase tracking-wide mb-1">Approved Capstone</div>
+              <h2 className="text-2xl font-extrabold">{proposal.title}</h2>
+            </div>
+            <div className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full font-bold flex items-center gap-2 border border-emerald-500/30">
+              <ShieldCheck className="w-4 h-4" /> Approved
+            </div>
+          </div>
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
+            <Rocket className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Build Phase Active</h3>
+            <p className="text-slate-600 mb-8 max-w-md mx-auto">You are now independently building your final capstone project based on your approved scope.</p>
+            <button onClick={() => setStage('showcase')} className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md">
+              I have finished building
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
+    if (currentCapstoneView === 'completed') {
+       return (
+        <div className="max-w-3xl mx-auto bg-emerald-50 p-12 rounded-3xl border border-emerald-200 text-center">
+          <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Trophy className="w-12 h-12 text-emerald-600" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-emerald-900 mb-4">Capstone Completed!</h2>
+          <p className="text-emerald-800 text-lg mb-8">You have successfully proved your skills. Your profile is now portfolio-ready.</p>
+        </div>
+       )
+    }
+
+    return null;
+  };
+
+  // If a specific project from the library is selected, render its launchpad
+  if (activeProjectView) {
+    return <ProjectLaunchpad projectId={activeProjectView} onBack={() => setActiveProjectView(null)} />;
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto pb-20">
+      <div className="mb-10">
+        <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Project Studio</h1>
+        <p className="text-slate-600 text-lg">Learn by building. Practice with guided projects, then prove it with your capstone.</p>
+      </div>
+
+      {/* Tabs Header */}
+      <div className="flex space-x-2 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
+        {[
+          { id: 'library', label: 'Project Library', icon: BookOpen },
+          { id: 'capstone', label: 'Final Capstone', icon: Trophy },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-6 py-4 font-bold border-b-2 whitespace-nowrap transition-colors ${
+              activeTab === tab.id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-indigo-600' : 'text-slate-400'}`} />
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'library' && renderLibrary()}
+      {activeTab === 'capstone' && renderCapstone()}
     </div>
   );
 }

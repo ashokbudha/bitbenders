@@ -1,5 +1,5 @@
 import { useStudent } from '../context/StudentContext';
-import { ROADMAPS, PROJECTS, ROLES } from '../data/mockData';
+import { ROADMAPS, CAPSTONE_IDEAS, ROLES } from '../data/mockData';
 import { Link, Navigate } from 'react-router-dom';
 import { BookOpen, Briefcase, Award, ArrowRight } from 'lucide-react';
 
@@ -12,7 +12,7 @@ export default function OverviewPage() {
 
   const role = ROLES.find(r => r.id === careerPath);
   const requiredCourses = ROADMAPS[careerPath] || [];
-  const project = PROJECTS[careerPath];
+  const project = CAPSTONE_IDEAS.find(p => p.careerPath === careerPath);
   
   const courseProgress = requiredCourses.length > 0 
     ? Math.round((completedCourses.length / requiredCourses.length) * 100) 

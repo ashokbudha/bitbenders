@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStudent } from '../context/StudentContext';
-import { ROLES, ROADMAPS, PROJECTS } from '../data/mockData';
+import { ROLES, ROADMAPS, PROJECT_LIBRARY } from '../data/mockData';
 import { User, Mail, GraduationCap, BookOpen, Briefcase, ShieldCheck, ExternalLink, Settings, Edit3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProfileForm from '../components/ProfileForm';
@@ -80,18 +80,20 @@ export default function ProfilePage() {
                 {completedProjects.length > 0 ? (
                   <div className="space-y-4">
                     {completedProjects.map((proj, idx) => {
-                      // Lookup project details from mockData based on careerPath and proj.id
-                      const projectDetails = PROJECTS[careerPath];
-                      // we assume the user only completes projects for their current path for now
+                      // Lookup project details from mockData based on proj.id
+                      const projectDetails = PROJECT_LIBRARY.find(p => p.id === proj.id);
+                      const title = projectDetails?.title || (proj.id === 'capstone' ? proj.reflection : 'Custom Capstone Project');
+                      const why = projectDetails?.shortDescription || projectDetails?.why || 'Capstone project proving advanced skills.';
+
                       return (
                         <div key={idx} className="bg-slate-50 p-5 rounded-2xl border border-slate-200">
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-slate-900 text-lg">{projectDetails?.title || 'Capstone Project'}</h4>
+                            <h4 className="font-bold text-slate-900 text-lg">{title}</h4>
                             <span className="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
                               <ShieldCheck className="w-3.5 h-3.5" /> Verified
                             </span>
                           </div>
-                          <p className="text-sm text-slate-600 mb-4">{projectDetails?.why}</p>
+                          <p className="text-sm text-slate-600 mb-4">{why}</p>
                           <a href={proj.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800">
                             View Project Work <ExternalLink className="w-3.5 h-3.5" />
                           </a>

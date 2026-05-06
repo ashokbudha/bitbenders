@@ -1,109 +1,153 @@
-Role & Expectations
-You are a senior backend engineer and Node.js + Express debugger, with strong expertise in PostgreSQL, JWT authentication, routing, and runtime debugging.
-I am building a real backend (not a mock) for a skills‑to‑employment platform.
-The backend uses Node.js, Express, PostgreSQL, JWT, bcrypt.
-I am currently facing a runtime authentication issue, and I want you to help me diagnose it precisely, not guess.
+Role
+You are a senior backend engineer responsible for delivering a working Node.js + Express + PostgreSQL backend, not explanations.
 
-✅ Context (Read Carefully)
+✅ Verified Current State (DO NOT REDO)
+The following are already confirmed working:
 
-Express server starts successfully.
-Database exists and is populated.
-Tables include: users, roles, candidates, etc.
-users.password_hash is a valid bcrypt hash.
-Roles table contains:
+PostgreSQL database leapfrog_connect is connected using a real app user.
+JWT authentication works.
+/auth/login returns a valid token.
+/auth/me works with Authorization: Bearer <token>.
+JWT middleware is implemented as verifyToken.
+Route /api/dashboard/pipeline currently returns { "ok": true } via a temporary test controller.
 
-admin
-hr
+Do NOT modify authentication, middleware, or DB connection logic.
 
+🎯 Objective
+Replace the temporary dashboard test endpoint with fully implemented, SQL‑backed dashboard APIs that work immediately when copied into the project.
 
-JWT_SECRET exists in .env.
-express.json() middleware is enabled.
+🗄️ Database Reality (Source of Truth)
+Use only existing tables/views:
 
+Tables:
 
-❌ The Problem
-When I call:
-POST /auth/login
-
-I consistently receive:
-{ "error": "Internal server error" }
-
-However:
-
-The server does not print any logs from inside authController.login
-Even explicit console.log("LOGIN HIT") inside the controller does not appear
-
-This strongly suggests that the controller I edited is not being executed.
-
-✅ Files Involved
-I will paste the following files next:
-
-server.js
-routes/authRoutes.js
-controllers/authController.js
-config/db.js
-.env
+candidates
+recruitment_stages
+candidate_stage_history
 
 
-✅ What I Want You To Do
-When I paste the code:
-1️⃣ Verify Route Wiring
+Views:
 
-Confirm whether /auth/login is correctly mapped to the login function I edited.
-Detect if the route is pointing to:
-
-the wrong controller file
-a stale import
-a duplicate controller
-an inline handler
-or a mismatched path
+candidate_readiness_view
 
 
 
-2️⃣ Identify Why Logs Are Not Appearing
+Key columns:
 
-Explain exactly why console.log() inside login does not execute.
-Identify whether the issue is:
-
-routing mismatch
-incorrect import/export
-server running from a different directory
-shadowed controller file
-or middleware short‑circuiting the request
+candidates.current_stage_id
+recruitment_stages.id, name, sort_order
+candidate_stage_history.stage_id, changed_at
+candidate_readiness_view.readiness_score, target_role, full_name
 
 
-
-3️⃣ Confirm Authentication Flow
-
-Validate:
-
-bcrypt usage
-JWT signing
-role resolution from roles table
+✅ Required Endpoints (ALL must be implemented)
 
 
-BUT only after confirming the correct controller is being executed.
-
-4️⃣ Give Minimal, Precise Fixes
-
-Do not redesign the backend.
-Do not suggest mocks or fake data.
-Point out the exact incorrect line(s) and what to change.
 
 
-✅ Constraints (Important)
 
-Do NOT suggest switching databases.
-Do NOT suggest using in‑memory storage.
-Do NOT suggest frontend fixes.
-Do NOT give generic tutorials.
 
-This is a runtime debugging and wiring problem, not an architectural one.
 
-✅ Output Format
-Please respond in this structure:
 
-What is happening (root cause)
-Why logs are not appearing
-Exact file + line causing the issue
-Minimal fix (code snippet)
-How to verify the fix works
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EndpointDescription/api/dashboard/pipelineCandidate count per stage/api/dashboard/top-candidatesTop 10 by readiness/api/dashboard/priority-candidatesreadiness_score ≥ 80/api/dashboard/funnel-movementsStage transition counts/api/dashboard/readiness-by-roleAvg readiness per role/api/dashboard/recent-activityLatest stage changes
+
+✅ SQL BEHAVIOR (MUST MATCH EXACTLY)
+
+Pipeline: LEFT JOIN recruitment_stages → candidates on current_stage_id, grouped and ordered by sort_order.
+Top Candidates: Select from candidate_readiness_view, ordered by readiness_score DESC, LIMIT 10.
+Priority Candidates: Same view, WHERE readiness_score >= 80.
+Funnel Movements: Join candidate_stage_history with recruitment_stages, aggregate movement counts, ordered by sort_order (optionally last 30 days).
+Readiness by Role: GROUP BY target_role, compute ROUND(AVG(readiness_score)::numeric, 2).
+Recent Activity: Join candidate_stage_history, candidates, and recruitment_stages, ordered by changed_at DESC.
+
+
+✅ What You MUST Produce
+1️⃣ dashboardController.js
+
+Export exactly these functions:
+
+getPipelineOverview
+getTopCandidates
+getPriorityCandidates
+getFunnelMovements
+getReadinessByRole
+getRecentActivity
+
+
+Each function:
+
+Uses pool.query(...)
+Wrapped in try/catch
+Returns res.json(rows)
+
+
+
+2️⃣ dashboardRoutes.js
+
+Imports functions by exact name (ESM‑strict).
+Protects every route using verifyToken.
+Correctly maps /api/dashboard/* paths.
+
+
+🔍 Self‑Testing Requirement (MANDATORY)
+For each endpoint, reason as if you are running:
+
+curl http://localhost:5000/api/dashboard/<endpoint> \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiaHIiLCJpYXQiOjE3NzgwNzU2OTEsImV4cCI6MTc3ODE2MjA5MX0.IM_iGCBSXDwgq7T8C4hmClt_X_hcz0492jbj9wMol1c"
+
+
+  Confirm internally that:
+
+the route exists
+middleware runs
+controller executes
+SQL returns rows
+JSON is returned (no HTML, no errors)
+
+
+🚫 Constraints
+
+❌ Do NOT redesign auth
+❌ Do NOT add mock data
+❌ Do NOT invent schema
+❌ Do NOT use ORM
+❌ Do NOT export unused functions
+
+
+✅ Output Format (STRICT)
+Respond in this exact order:
+
+Complete dashboardController.js
+Complete dashboardRoutes.js
+Brief SQL explanation per endpoint
+Final verification checklist
+
+
+Assume the code will be copy‑pasted and executed immediately.
+Produce a backend that works without further debugging.
+Begin now.

@@ -1,7 +1,21 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-green: #038E43;
+  --color-brand-black: #111111;
+  --color-brand-gray: #333333;
+  --color-brand-neutral: #FEFAF2;
+  --color-brand-white: #FFFFFF;
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Tomato Grotesk', sans-serif;
+}
+
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply bg-brand-neutral text-brand-black antialiased font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-brand-black;
   }
 }

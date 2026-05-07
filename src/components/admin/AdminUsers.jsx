@@ -33,26 +33,26 @@ export default function AdminUsers() {
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">User & Role Management</h2>
-          <p className="text-slate-500 text-sm">Verify HR accounts and manage platform access.</p>
+          <h2 className="text-2xl font-bold text-brand-black">User & Role Management</h2>
+          <p className="text-brand-gray text-sm">Verify HR accounts and manage platform access.</p>
         </div>
         <div className="flex gap-3 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-3 text-brand-gray/60" />
             <input 
               type="text" 
               placeholder="Search users..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full pl-9 pr-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none"
             />
           </div>
           <div className="relative">
-            <Filter className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <Filter className="w-4 h-4 absolute left-3 top-3 text-brand-gray/60" />
             <select 
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value)}
-              className="pl-9 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white appearance-none"
+              className="pl-9 pr-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none bg-brand-white appearance-none"
             >
               <option value="all">All Roles</option>
               <option value="student">Students</option>
@@ -63,9 +63,9 @@ export default function AdminUsers() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-brand-white rounded-2xl border border-brand-gray/20 shadow-sm overflow-hidden">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-semibold">
+          <thead className="bg-brand-neutral border-b border-brand-gray/20 text-brand-gray uppercase text-xs font-semibold">
             <tr>
               <th className="px-6 py-4">User</th>
               <th className="px-6 py-4">Role</th>
@@ -74,44 +74,44 @@ export default function AdminUsers() {
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-brand-gray/10">
             {filteredUsers.map(user => (
-              <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+              <tr key={user.id} className="hover:bg-brand-neutral transition-colors">
                 <td className="px-6 py-4">
-                  <div className="font-semibold text-slate-900">{user.name}</div>
-                  <div className="text-slate-500 text-xs">{user.email}</div>
-                  {user.company && <div className="text-indigo-600 text-xs mt-0.5">{user.company}</div>}
+                  <div className="font-semibold text-brand-black">{user.name}</div>
+                  <div className="text-brand-gray text-xs">{user.email}</div>
+                  {user.company && <div className="text-brand-green text-xs mt-0.5">{user.company}</div>}
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold capitalize
                     ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
                       user.role === 'hr' ? 'bg-blue-100 text-blue-700' : 
-                      'bg-slate-100 text-slate-700'}`}>
+                      'bg-brand-gray/10 text-brand-gray'}`}>
                     {user.role}
                   </span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
-                    {user.status === 'verified' && <span className="flex items-center gap-1 text-emerald-600 font-medium"><Shield className="w-4 h-4" /> Verified HR</span>}
-                    {user.status === 'pending_verification' && <span className="flex items-center gap-1 text-amber-600 font-medium"><UserCheck className="w-4 h-4" /> Pending HR Verification</span>}
-                    {user.status === 'active' && <span className="text-slate-600">Active</span>}
+                    {user.status === 'verified' && <span className="flex items-center gap-1 text-brand-green font-medium"><Shield className="w-4 h-4" /> Verified HR</span>}
+                    {user.status === 'pending_verification' && <span className="flex items-center gap-1 text-brand-green font-medium"><UserCheck className="w-4 h-4" /> Pending HR Verification</span>}
+                    {user.status === 'active' && <span className="text-brand-gray">Active</span>}
                     {user.status === 'suspended' && <span className="flex items-center gap-1 text-red-600 font-medium"><UserX className="w-4 h-4" /> Suspended</span>}
                   </div>
                 </td>
-                <td className="px-6 py-4 text-slate-500">{user.registered}</td>
+                <td className="px-6 py-4 text-brand-gray">{user.registered}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
                     {user.role === 'hr' && user.status === 'pending_verification' && (
-                      <button onClick={() => handleVerifyHR(user.id)} className="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-3 py-1.5 rounded-lg font-semibold transition-colors">
+                      <button onClick={() => handleVerifyHR(user.id)} className="text-xs bg-brand-green/10 text-emerald-700 hover:bg-emerald-100 px-3 py-1.5 rounded-lg font-semibold transition-colors">
                         Approve HR
                       </button>
                     )}
                     {user.role !== 'admin' && (
-                      <button onClick={() => handleSuspend(user.id)} className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${user.status === 'suspended' ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-red-50 text-red-700 hover:bg-red-100'}`}>
+                      <button onClick={() => handleSuspend(user.id)} className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${user.status === 'suspended' ? 'bg-brand-gray/10 text-brand-gray hover:bg-brand-gray/20' : 'bg-red-50 text-red-700 hover:bg-red-100'}`}>
                         {user.status === 'suspended' ? 'Reactivate' : 'Suspend'}
                       </button>
                     )}
-                    <button className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg transition-colors">
+                    <button className="p-1.5 text-brand-gray/60 hover:text-brand-gray rounded-lg transition-colors">
                       <MoreVertical className="w-4 h-4" />
                     </button>
                   </div>
@@ -121,7 +121,7 @@ export default function AdminUsers() {
           </tbody>
         </table>
         {filteredUsers.length === 0 && (
-          <div className="p-8 text-center text-slate-500">No users found matching your criteria.</div>
+          <div className="p-8 text-center text-brand-gray">No users found matching your criteria.</div>
         )}
       </div>
     </div>

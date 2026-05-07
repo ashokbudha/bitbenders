@@ -30,10 +30,10 @@ export default function StudentDashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans">
+    <div className="min-h-screen bg-brand-neutral flex font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col sticky top-0 h-screen">
-        <div className="p-6 flex items-center gap-2 text-indigo-600">
+      <aside className="w-64 bg-brand-white border-r border-brand-gray/20 flex flex-col sticky top-0 h-screen">
+        <div className="p-6 flex items-center gap-2 text-brand-green">
           <GraduationCap className="w-8 h-8" />
           <span className="font-bold text-xl tracking-tight">StudentPortal</span>
         </div>
@@ -48,8 +48,8 @@ export default function StudentDashboardLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
                     isActive 
-                      ? 'bg-indigo-50 text-indigo-700' 
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-brand-green/10 text-brand-green/90' 
+                      : 'text-brand-gray hover:bg-brand-neutral hover:text-brand-black'
                   }`
                 }
               >
@@ -58,21 +58,21 @@ export default function StudentDashboardLayout() {
               </NavLink>
             ))
           ) : (
-            <div className="px-4 py-6 text-center border-2 border-dashed border-slate-200 rounded-xl mt-4">
-              <p className="text-slate-500 text-sm font-medium">Please select a career path to unlock your dashboard.</p>
+            <div className="px-4 py-6 text-center border-2 border-dashed border-brand-gray/20 rounded-xl mt-4">
+              <p className="text-brand-gray text-sm font-medium">Please select a career path to unlock your dashboard.</p>
             </div>
           )}
         </nav>
 
-        <div className="p-6 border-t border-slate-200">
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm">
-            <p className="font-semibold text-slate-800">Current Path:</p>
-            <p className="text-indigo-600 capitalize font-medium">{careerPath?.replace('-', ' ') || 'None selected'}</p>
+        <div className="p-6 border-t border-brand-gray/20">
+          <div className="bg-brand-neutral p-4 rounded-xl border border-brand-gray/20 text-sm">
+            <p className="font-semibold text-brand-black">Current Path:</p>
+            <p className="text-brand-green capitalize font-medium">{careerPath?.replace('-', ' ') || 'None selected'}</p>
           </div>
           
           <button 
             onClick={handleLogout}
-            className="flex items-center justify-center gap-2 text-slate-500 hover:text-red-600 hover:bg-red-50 w-full mt-4 px-4 py-2 rounded-xl transition-colors font-medium"
+            className="flex items-center justify-center gap-2 text-brand-gray hover:text-red-600 hover:bg-red-50 w-full mt-4 px-4 py-2 rounded-xl transition-colors font-medium"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Logout

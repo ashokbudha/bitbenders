@@ -8,10 +8,10 @@ export default function ProtectedRoute({ allowedRoles }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-brand-neutral">
         <div className="text-center flex flex-col items-center">
-          <Loader2 className="w-10 h-10 animate-spin text-indigo-600 mb-4" />
-          <p className="text-slate-500 font-medium">Verifying session...</p>
+          <Loader2 className="w-10 h-10 animate-spin text-brand-green mb-4" />
+          <p className="text-brand-gray font-medium">Verifying session...</p>
         </div>
       </div>
     );

@@ -63,32 +63,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-brand-neutral flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-indigo-600 shadow-lg mb-4">
-          <Lock className="h-7 w-7 text-white" />
+        <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-brand-green shadow-lg mb-4">
+          <Lock className="h-7 w-7 text-brand-white" />
         </div>
-        <h2 className="mt-4 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="mt-4 text-center text-3xl font-extrabold text-brand-black tracking-tight">
           {isLoginMode ? 'Welcome back' : 'Create your account'}
         </h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl shadow-slate-200/50 sm:rounded-2xl sm:px-10 border border-slate-100">
+        <div className="bg-brand-white py-8 px-4 shadow-xl shadow-brand-gray/20/50 sm:rounded-2xl sm:px-10 border border-brand-gray/10">
           
           {/* Mode Toggle */}
-          <div className="flex p-1 bg-slate-100 rounded-xl mb-8">
+          <div className="flex p-1 bg-brand-gray/10 rounded-xl mb-8">
             <button
               type="button"
               onClick={() => setIsLoginMode(true)}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${isLoginMode ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${isLoginMode ? 'bg-brand-white text-brand-green/90 shadow-sm' : 'text-brand-gray hover:text-brand-gray'}`}
             >
               Sign In
             </button>
             <button
               type="button"
               onClick={() => setIsLoginMode(false)}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isLoginMode ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isLoginMode ? 'bg-brand-white text-brand-green/90 shadow-sm' : 'text-brand-gray hover:text-brand-gray'}`}
             >
               Register
             </button>
@@ -104,12 +104,12 @@ export default function LoginPage() {
             
             {!isLoginMode && (
               <div className="space-y-3 mb-6">
-                <label className="block text-sm font-bold text-slate-700">I am joining as a:</label>
+                <label className="block text-sm font-bold text-brand-gray">I am joining as a:</label>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => setSelectedRole('student')}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'student' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300'}`}
+                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'student' ? 'border-brand-green bg-brand-green/10 text-brand-green/90' : 'border-brand-gray/20 bg-brand-white text-brand-gray hover:border-indigo-300'}`}
                   >
                     <GraduationCap className="w-6 h-6 mb-1" />
                     <span className="text-xs font-bold">Student</span>
@@ -117,7 +117,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setSelectedRole('hr')}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'hr' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300'}`}
+                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'hr' ? 'border-brand-green bg-brand-green/10 text-brand-green/90' : 'border-brand-gray/20 bg-brand-white text-brand-gray hover:border-indigo-300'}`}
                   >
                     <Briefcase className="w-6 h-6 mb-1" />
                     <span className="text-xs font-bold">HR / Co.</span>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setSelectedRole('admin')}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'admin' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300'}`}
+                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'admin' ? 'border-brand-green bg-brand-green/10 text-brand-green/90' : 'border-brand-gray/20 bg-brand-white text-brand-gray hover:border-indigo-300'}`}
                   >
                     <Key className="w-6 h-6 mb-1" />
                     <span className="text-xs font-bold">Admin</span>
@@ -135,34 +135,34 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1">Email address</label>
+              <label className="block text-sm font-bold text-brand-gray mb-1">Email address</label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-slate-400" />
+                  <User className="h-5 w-5 text-brand-gray/60" />
                 </div>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 sm:text-sm border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 border p-3 outline-none transition-shadow"
+                  className="block w-full pl-10 sm:text-sm border-brand-gray/20 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green border p-3 outline-none transition-shadow"
                   placeholder="name@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1">Password</label>
+              <label className="block text-sm font-bold text-brand-gray mb-1">Password</label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400" />
+                  <Lock className="h-5 w-5 text-brand-gray/60" />
                 </div>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 sm:text-sm border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 border p-3 outline-none transition-shadow"
+                  className="block w-full pl-10 sm:text-sm border-brand-gray/20 rounded-xl focus:ring-2 focus:ring-brand-green focus:border-brand-green border p-3 outline-none transition-shadow"
                   placeholder="••••••••"
                 />
               </div>
@@ -171,7 +171,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70 transition-colors mt-6"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-brand-white bg-brand-green hover:bg-brand-green/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-green disabled:opacity-70 transition-colors mt-6"
             >
               {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLoginMode ? 'Sign In securely' : 'Create Account')}
             </button>
@@ -180,7 +180,7 @@ export default function LoginPage() {
         </div>
 
         {/* Development / Demo Mode Selector */}
-        <div className="mt-8 border-2 border-dashed border-amber-300 bg-amber-50 rounded-2xl p-6">
+        <div className="mt-8 border-2 border-dashed border-amber-300 bg-brand-green/10 rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-4 text-amber-800">
             <ShieldAlert className="w-5 h-5" />
             <h3 className="font-bold text-sm uppercase tracking-wider">Demo / Testing Mode</h3>
@@ -189,13 +189,13 @@ export default function LoginPage() {
             Since the backend is mocked locally, you can bypass registration and instantly log in to any dashboard to test RBAC logic.
           </p>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => handleQuickDemo('student')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
+            <button onClick={() => handleQuickDemo('student')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-brand-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
               Test Student
             </button>
-            <button onClick={() => handleQuickDemo('hr')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
+            <button onClick={() => handleQuickDemo('hr')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-brand-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
               Test HR
             </button>
-            <button onClick={() => handleQuickDemo('admin')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
+            <button onClick={() => handleQuickDemo('admin')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-brand-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
               Test Admin
             </button>
           </div>

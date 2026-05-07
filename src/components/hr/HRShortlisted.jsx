@@ -12,7 +12,7 @@ export default function HRShortlisted() {
   const [shortlist, setShortlist] = useState(INITIAL_SHORTLIST);
 
   const statuses = [
-    { id: 'shortlisted', label: 'Shortlisted', color: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
+    { id: 'shortlisted', label: 'Shortlisted', color: 'bg-indigo-100 text-brand-green/90 border-indigo-200' },
     { id: 'contacted', label: 'Contacted', color: 'bg-amber-100 text-amber-700 border-amber-200' },
     { id: 'interview', label: 'Interviewing', color: 'bg-purple-100 text-purple-700 border-purple-200' }
   ];
@@ -31,14 +31,14 @@ export default function HRShortlisted() {
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Candidate Workflow</h2>
-          <p className="text-slate-500 text-sm">Manage shortlisted candidates and track hiring progress.</p>
+          <h2 className="text-2xl font-bold text-brand-black">Candidate Workflow</h2>
+          <p className="text-brand-gray text-sm">Manage shortlisted candidates and track hiring progress.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex">
+      <div className="bg-brand-white rounded-2xl border border-brand-gray/20 shadow-sm overflow-hidden flex">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-semibold">
+          <thead className="bg-brand-neutral border-b border-brand-gray/20 text-brand-gray uppercase text-xs font-semibold">
             <tr>
               <th className="px-6 py-4">Candidate</th>
               <th className="px-6 py-4">Applied For</th>
@@ -46,10 +46,10 @@ export default function HRShortlisted() {
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-brand-gray/10">
             {shortlist.length === 0 ? (
               <tr>
-                <td colSpan="4" className="p-8 text-center text-slate-500">No candidates in your pipeline yet. Discover and shortlist talent to see them here.</td>
+                <td colSpan="4" className="p-8 text-center text-brand-gray">No candidates in your pipeline yet. Discover and shortlist talent to see them here.</td>
               </tr>
             ) : (
               shortlist.map(item => {
@@ -57,12 +57,12 @@ export default function HRShortlisted() {
                 const roleTitle = ROLES.find(r => r.id === student?.careerPath)?.title || 'Unknown Role';
                 
                 return (
-                  <tr key={item.studentId} className="hover:bg-slate-50">
+                  <tr key={item.studentId} className="hover:bg-brand-neutral">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-slate-900">{student?.name}</div>
-                      <div className="text-slate-500 text-xs mt-1">{roleTitle}</div>
+                      <div className="font-bold text-brand-black">{student?.name}</div>
+                      <div className="text-brand-gray text-xs mt-1">{roleTitle}</div>
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-700">
+                    <td className="px-6 py-4 font-medium text-brand-gray">
                       {item.jobId === 1 ? 'Frontend Intern' : 'Junior Digital Marketer'}
                     </td>
                     <td className="px-6 py-4">
@@ -77,11 +77,11 @@ export default function HRShortlisted() {
                       </select>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2 text-slate-400">
-                        <button className="p-1.5 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Message"><Mail className="w-4 h-4" /></button>
-                        <button className="p-1.5 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Schedule Interview"><Calendar className="w-4 h-4" /></button>
+                      <div className="flex justify-end gap-2 text-brand-gray/60">
+                        <button className="p-1.5 hover:text-brand-green hover:bg-brand-green/10 rounded-lg transition-colors" title="Message"><Mail className="w-4 h-4" /></button>
+                        <button className="p-1.5 hover:text-brand-green hover:bg-brand-green/10 rounded-lg transition-colors" title="Schedule Interview"><Calendar className="w-4 h-4" /></button>
                         <button onClick={() => removeCandidate(item.studentId)} className="p-1.5 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove"><XCircle className="w-4 h-4" /></button>
-                        <button className="p-1.5 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"><MoreHorizontal className="w-4 h-4" /></button>
+                        <button className="p-1.5 hover:text-brand-black hover:bg-brand-gray/10 rounded-lg transition-colors"><MoreHorizontal className="w-4 h-4" /></button>
                       </div>
                     </td>
                   </tr>

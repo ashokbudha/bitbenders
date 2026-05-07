@@ -41,13 +41,13 @@ export default function LearningRoadmapPage() {
   return (
     <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-10 text-center">
-        <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Your Learning Roadmap</h1>
-        <p className="text-lg text-slate-600">
-          Path: <span className="font-semibold text-indigo-600">{role?.title}</span>
+        <h1 className="text-3xl font-extrabold text-brand-black mb-2">Your Learning Roadmap</h1>
+        <p className="text-lg text-brand-gray">
+          Path: <span className="font-semibold text-brand-green">{role?.title}</span>
         </p>
       </div>
 
-      <div className="relative border-l-2 border-slate-200 ml-4 md:ml-6 space-y-10">
+      <div className="relative border-l-2 border-brand-gray/20 ml-4 md:ml-6 space-y-10">
         {roadmap.map((step, index) => {
           const isPast = step.id < currentStepId;
           const isCurrent = step.id === currentStepId;
@@ -56,10 +56,10 @@ export default function LearningRoadmapPage() {
           return (
             <div key={step.id} className="relative pl-8 md:pl-10">
               {/* Timeline Icon */}
-              <div className={`absolute -left-[17px] top-1 flex items-center justify-center w-8 h-8 rounded-full border-2 bg-white ${
+              <div className={`absolute -left-[17px] top-1 flex items-center justify-center w-8 h-8 rounded-full border-2 bg-brand-white ${
                 isPast ? 'border-green-500 text-green-500' :
-                isCurrent ? 'border-indigo-600 text-indigo-600 ring-4 ring-indigo-50' :
-                'border-slate-300 text-slate-400'
+                isCurrent ? 'border-brand-green text-brand-green ring-4 ring-brand-green/10' :
+                'border-brand-gray/40 text-brand-gray/60'
               }`}>
                 {isPast ? <CheckCircle2 className="w-5 h-5" /> : 
                  isLocked ? <Lock className="w-4 h-4" /> : 
@@ -68,29 +68,29 @@ export default function LearningRoadmapPage() {
 
               {/* Card */}
               <div className={`rounded-2xl border p-6 transition-all ${
-                isCurrent ? 'bg-white border-indigo-200 shadow-md shadow-indigo-100/50' :
-                isPast ? 'bg-slate-50 border-slate-200' :
-                'bg-slate-50/50 border-slate-100 opacity-60'
+                isCurrent ? 'bg-brand-white border-indigo-200 shadow-md shadow-indigo-100/50' :
+                isPast ? 'bg-brand-neutral border-brand-gray/20' :
+                'bg-brand-neutral/50 border-brand-gray/10 opacity-60'
               }`}>
                 {isCurrent && (
-                  <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">
+                  <span className="inline-block px-3 py-1 bg-indigo-100 text-brand-green/90 text-xs font-bold uppercase tracking-wider rounded-full mb-4">
                     Your Next Step
                   </span>
                 )}
                 
-                <h2 className={`text-xl font-bold mb-3 ${isCurrent ? 'text-slate-900' : 'text-slate-700'}`}>
+                <h2 className={`text-xl font-bold mb-3 ${isCurrent ? 'text-brand-black' : 'text-brand-gray'}`}>
                   {step.id}. {step.title}
                 </h2>
                 
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-500 mb-1">Why it matters for the job</h3>
-                    <p className={`text-sm ${isCurrent ? 'text-slate-700' : 'text-slate-600'}`}>
+                    <h3 className="text-sm font-semibold text-brand-gray mb-1">Why it matters for the job</h3>
+                    <p className={`text-sm ${isCurrent ? 'text-brand-gray' : 'text-brand-gray'}`}>
                       {step.why}
                     </p>
                   </div>
                   
-                  <div className="bg-amber-50 rounded-lg p-4 border border-amber-100/50">
+                  <div className="bg-brand-green/10 rounded-lg p-4 border border-amber-100/50">
                     <h3 className="text-sm font-semibold text-amber-800 mb-1">Output to prove completion</h3>
                     <p className="text-sm text-amber-900/80">
                       {step.output}
@@ -101,7 +101,7 @@ export default function LearningRoadmapPage() {
                 {isCurrent && (
                   <button
                     onClick={() => handleCompleteStep(step.id)}
-                    className="mt-6 flex items-center justify-center gap-2 w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-sm"
+                    className="mt-6 flex items-center justify-center gap-2 w-full py-3 px-4 bg-brand-green hover:bg-brand-green/90 text-brand-white font-medium rounded-xl transition-colors shadow-sm"
                   >
                     Mark as Completed
                     <CheckCircle2 className="w-4 h-4" />
@@ -124,7 +124,7 @@ export default function LearningRoadmapPage() {
           </p>
           <button
             onClick={handleProceedToProject}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto mx-auto py-3 px-8 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors shadow-md"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto mx-auto py-3 px-8 bg-green-600 hover:bg-green-700 text-brand-white font-bold rounded-xl transition-colors shadow-md"
           >
             Go to Project Workspace
             <ArrowRight className="w-5 h-5" />

@@ -49,40 +49,40 @@ export default function ProjectWorkspacePage() {
 
   return (
     <div className="max-w-3xl mx-auto animate-in fade-in duration-500">
-      <div className="mb-8 border-b border-slate-200 pb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 text-sm font-semibold rounded-full mb-4">
+      <div className="mb-8 border-b border-brand-gray/20 pb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-green/10 text-brand-green/90 text-sm font-semibold rounded-full mb-4">
           <Briefcase className="w-4 h-4" />
           First Real Project
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 mb-4">{project.title}</h1>
-        <p className="text-lg text-slate-600">
+        <h1 className="text-3xl font-extrabold text-brand-black mb-4">{project.title}</h1>
+        <p className="text-lg text-brand-gray">
           This is the only project you need to build to prove you are ready for a {role?.title} role.
         </p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-3 mb-10">
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500 mb-2">Why it matters</h2>
-            <p className="text-slate-800">{project.why}</p>
+          <div className="bg-brand-white rounded-2xl border border-brand-gray/20 p-6 shadow-sm">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-brand-gray mb-2">Why it matters</h2>
+            <p className="text-brand-black">{project.why}</p>
           </div>
 
-          <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-6">
+          <div className="bg-brand-green/10 rounded-2xl border border-emerald-100 p-6">
             <h2 className="text-sm font-bold uppercase tracking-wide text-emerald-800 mb-2">Scope Boundaries (What is "Good Enough")</h2>
             <p className="text-emerald-900">{project.goodEnough}</p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-slate-900">Task Breakdown</h2>
+          <h2 className="text-lg font-bold text-brand-black">Task Breakdown</h2>
           <div className="space-y-3">
             {project.tasks.map((task, index) => (
-              <div key={task.id} className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-                <h3 className="font-semibold text-slate-800 mb-2 text-sm">Step {index + 1}</h3>
-                <p className="text-sm text-slate-600 mb-3">{task.instruction}</p>
-                <div className="bg-slate-50 rounded p-2 text-xs text-slate-500 font-medium">
-                  <span className="text-indigo-600 font-bold mr-1">Outcome:</span>
+              <div key={task.id} className="bg-brand-white rounded-xl border border-brand-gray/20 p-4 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-brand-green"></div>
+                <h3 className="font-semibold text-brand-black mb-2 text-sm">Step {index + 1}</h3>
+                <p className="text-sm text-brand-gray mb-3">{task.instruction}</p>
+                <div className="bg-brand-neutral rounded p-2 text-xs text-brand-gray font-medium">
+                  <span className="text-brand-green font-bold mr-1">Outcome:</span>
                   {task.outcome}
                 </div>
               </div>
@@ -92,12 +92,12 @@ export default function ProjectWorkspacePage() {
       </div>
 
       {/* Submission Section */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-        <div className={`p-8 ${isSubmitted ? 'bg-indigo-50' : 'bg-slate-900 text-white'}`}>
+      <div className="bg-brand-white rounded-3xl border border-brand-gray/20 shadow-xl overflow-hidden">
+        <div className={`p-8 ${isSubmitted ? 'bg-brand-green/10' : 'bg-brand-black text-brand-white'}`}>
           <h2 className={`text-2xl font-bold mb-2 ${isSubmitted ? 'text-indigo-900' : ''}`}>
             {isSubmitted ? 'Project Submitted Successfully' : 'Submit Your Project'}
           </h2>
-          <p className={isSubmitted ? 'text-indigo-700' : 'text-slate-300'}>
+          <p className={isSubmitted ? 'text-brand-green/90' : 'text-brand-gray/40'}>
             {isSubmitted 
               ? 'Great job completing your first core project!' 
               : 'Add your live link or code repository so companies can see your work.'}
@@ -107,26 +107,26 @@ export default function ProjectWorkspacePage() {
         <div className="p-8">
           {isSubmitted ? (
             <div className="space-y-6">
-              <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-slate-200">
+              <div className="flex items-start gap-4 p-4 bg-brand-white rounded-xl border border-brand-gray/20">
                 <div className="bg-green-100 p-2 rounded-full text-green-600">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-1">Project Link</h3>
-                  <a href={link} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline break-all">
+                  <h3 className="font-bold text-brand-black mb-1">Project Link</h3>
+                  <a href={link} target="_blank" rel="noreferrer" className="text-brand-green hover:underline break-all">
                     {link}
                   </a>
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <h3 className="font-bold text-slate-900 mb-2">Your Reflection</h3>
-                <p className="text-slate-700 italic">"{reflection}"</p>
+              <div className="p-4 bg-brand-neutral rounded-xl border border-brand-gray/20">
+                <h3 className="font-bold text-brand-black mb-2">Your Reflection</h3>
+                <p className="text-brand-gray italic">"{reflection}"</p>
               </div>
 
               <button
                 onClick={handleGoToReadiness}
-                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md text-lg"
+                className="w-full py-4 bg-brand-green hover:bg-brand-green/90 text-brand-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md text-lg"
               >
                 Validate My Readiness
                 <ArrowRight className="w-5 h-5" />
@@ -135,7 +135,7 @@ export default function ProjectWorkspacePage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">
+                <label className="block text-sm font-bold text-brand-gray mb-2">
                   Project Link (GitHub / Google Doc / Live Demo)
                 </label>
                 <input
@@ -144,12 +144,12 @@ export default function ProjectWorkspacePage() {
                   placeholder="https://..."
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-900"
+                  className="w-full px-4 py-3 rounded-xl border border-brand-gray/40 focus:ring-2 focus:ring-brand-green focus:border-brand-green outline-none transition-all text-brand-black"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">
+                <label className="block text-sm font-bold text-brand-gray mb-2">
                   Reflection: What I learned while doing this
                 </label>
                 <textarea
@@ -158,13 +158,13 @@ export default function ProjectWorkspacePage() {
                   placeholder="The hardest part was... I solved it by..."
                   value={reflection}
                   onChange={(e) => setReflection(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-900 resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-brand-gray/40 focus:ring-2 focus:ring-brand-green focus:border-brand-green outline-none transition-all text-brand-black resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-colors shadow-md"
+                className="w-full py-4 bg-brand-black hover:bg-brand-black text-brand-white font-bold rounded-xl transition-colors shadow-md"
               >
                 Submit Project
               </button>

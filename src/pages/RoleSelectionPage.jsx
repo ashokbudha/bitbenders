@@ -26,8 +26,8 @@ export default function RoleSelectionPage() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto py-8">
       <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Choose Your Skill Path</h1>
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-brand-black mb-4 tracking-tight">Choose Your Skill Path</h1>
+        <p className="text-lg text-brand-gray max-w-2xl mx-auto">
           Start your journey by selecting a realistic industry role. Your dashboard, learning roadmap, and capstone projects will be personalized for this path.
         </p>
       </div>
@@ -36,33 +36,33 @@ export default function RoleSelectionPage() {
         {ROLES.map((role) => (
           <div 
             key={role.id}
-            className={`relative bg-white rounded-2xl border-2 transition-all duration-200 flex flex-col ${
+            className={`relative bg-brand-white rounded-2xl border-2 transition-all duration-200 flex flex-col ${
               selectedRole === role.id 
-                ? 'border-indigo-600 shadow-lg shadow-indigo-100 scale-[1.02]' 
-                : 'border-slate-200 hover:border-indigo-300 hover:shadow-md cursor-pointer'
+                ? 'border-brand-green shadow-lg shadow-indigo-100 scale-[1.02]' 
+                : 'border-brand-gray/20 hover:border-indigo-300 hover:shadow-md cursor-pointer'
             }`}
             onClick={() => handleSelectRole(role.id)}
           >
             {selectedRole === role.id && (
-              <div className="absolute top-4 right-4 text-indigo-600">
+              <div className="absolute top-4 right-4 text-brand-green">
                 <CheckCircle2 className="w-6 h-6 fill-indigo-100" />
               </div>
             )}
             
             <div className="p-6 flex-1">
-              <h2 className="text-xl font-bold text-slate-900 mb-2 pr-8">{role.title}</h2>
-              <p className="text-sm text-slate-600 mb-4 line-clamp-2">{role.dayToDay}</p>
+              <h2 className="text-xl font-bold text-brand-black mb-2 pr-8">{role.title}</h2>
+              <p className="text-sm text-brand-gray mb-4 line-clamp-2">{role.dayToDay}</p>
 
               <div className="space-y-2 mb-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">Key Skills</h3>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-brand-gray">Key Skills</h3>
                 <div className="flex flex-wrap gap-2">
                   {role.reqSkills?.slice(0, 3).map((skill, i) => (
-                    <span key={i} className="text-xs font-medium bg-slate-100 text-slate-700 px-2 py-1 rounded-md">
+                    <span key={i} className="text-xs font-medium bg-brand-gray/10 text-brand-gray px-2 py-1 rounded-md">
                       {skill}
                     </span>
                   ))}
                   {role.reqSkills?.length > 3 && (
-                    <span className="text-xs font-medium bg-slate-100 text-slate-500 px-2 py-1 rounded-md">
+                    <span className="text-xs font-medium bg-brand-gray/10 text-brand-gray px-2 py-1 rounded-md">
                       +{role.reqSkills.length - 3} more
                     </span>
                   )}
@@ -74,12 +74,12 @@ export default function RoleSelectionPage() {
               {selectedRole === role.id ? (
                 <button
                   onClick={handleConfirmRole}
-                  className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-brand-green hover:bg-brand-green/90 text-brand-white font-medium rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
                 >
                   Start Learning <ArrowRight className="w-4 h-4" />
                 </button>
               ) : (
-                <button className="w-full py-3 px-4 bg-slate-50 text-slate-600 font-medium rounded-xl border border-slate-200 transition-colors pointer-events-none">
+                <button className="w-full py-3 px-4 bg-brand-neutral text-brand-gray font-medium rounded-xl border border-brand-gray/20 transition-colors pointer-events-none">
                   Select this path
                 </button>
               )}
@@ -88,15 +88,15 @@ export default function RoleSelectionPage() {
         ))}
       </div>
 
-      <div className="flex flex-col items-center justify-center p-8 bg-indigo-50/50 rounded-3xl border border-indigo-100 text-center">
+      <div className="flex flex-col items-center justify-center p-8 bg-brand-green/10/50 rounded-3xl border border-indigo-100 text-center">
         <Compass className="w-12 h-12 text-indigo-400 mb-4" />
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Not sure which path to pick?</h3>
-        <p className="text-slate-600 mb-6 max-w-lg">
+        <h3 className="text-xl font-bold text-brand-black mb-2">Not sure which path to pick?</h3>
+        <p className="text-brand-gray mb-6 max-w-lg">
           Don't worry! Choosing a career path can be overwhelming. Take some time to explore the different roles, responsibilities, and required skills to find the perfect fit for you.
         </p>
         <Link 
           to="/dashboard/explore" 
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-indigo-700 hover:bg-indigo-50 font-bold rounded-xl border border-indigo-200 transition-colors shadow-sm"
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-white text-brand-green/90 hover:bg-brand-green/10 font-bold rounded-xl border border-indigo-200 transition-colors shadow-sm"
         >
           Still confused? Let's explore
           <ArrowRight className="w-4 h-4" />

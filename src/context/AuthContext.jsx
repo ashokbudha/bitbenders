@@ -1,53 +1,67 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
+import { getRole, getToken, logout as clearStoredAuth, setAuthSession } from '../utils/auth';
 
 const AuthContext = createContext();
 
+// Hook is colocated with provider for auth module ergonomics.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState(getRole());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('jwt_token');
+      const token = getToken();
       if (!token) {
-        throw new Error("No token");
+        throw new Error('No token');
       }
       const response = await api.get('/auth/me');
       setUser(response.data);
       setRole(response.data.role);
+      setAuthSession(token, response.data.role);
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch {
       setUser(null);
       setRole(null);
       setIsAuthenticated(false);
-      localStorage.removeItem('jwt_token');
+      clearStoredAuth();
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchUser();
+    const bootstrapTimer = window.setTimeout(() => {
+      fetchUser();
+    }, 0);
+
     const handleUnauthorized = () => {
       setUser(null);
       setRole(null);
       setIsAuthenticated(false);
-      localStorage.removeItem('jwt_token');
+      clearStoredAuth();
     };
+
     window.addEventListener('auth:unauthorized', handleUnauthorized);
-    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.clearTimeout(bootstrapTimer);
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
   }, [fetchUser]);
 
   const login = async (credentials) => {
     try {
       const response = await api.post('/auth/login', credentials);
-      localStorage.setItem('jwt_token', response.data.token);
+      setAuthSession(response.data.token, response.data.user.role);
+      if (import.meta.env.DEV) {
+        console.info('Auth token received:', response.data.token);
+      }
       setUser(response.data.user);
       setRole(response.data.user.role);
       setIsAuthenticated(true);
@@ -62,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setRole(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('jwt_token');
+    clearStoredAuth();
   };
 
   return (

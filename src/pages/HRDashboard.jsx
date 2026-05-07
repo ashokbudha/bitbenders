@@ -1,11 +1,19 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Search, UserCheck, FileText, LogOut, User as UserIcon, Briefcase, LayoutDashboard } from 'lucide-react';
+import { Search, UserCheck, LogOut, User as UserIcon, Briefcase, LayoutDashboard } from 'lucide-react';
 import ProfileSettings from '../components/ProfileSettings';
-import HROpportunities from '../components/HROpportunities';
 import HROverview from '../components/hr/HROverview';
-import HRDiscovery from '../components/hr/HRDiscovery';
-import HRShortlisted from '../components/hr/HRShortlisted';
+
+function TabPlaceholder() {
+  return (
+    <div className="bg-brand-white rounded-xl border border-brand-gray/20 shadow-sm p-8">
+      <h2 className="text-2xl font-bold text-brand-black mb-2">Coming Soon</h2>
+      <p className="text-brand-gray">
+        This section will surface role-specific insights in the next phase.
+      </p>
+    </div>
+  );
+}
 
 export default function HRDashboard() {
   const { user, logout } = useAuth();
@@ -14,31 +22,31 @@ export default function HRDashboard() {
   return (
     <div className="min-h-screen bg-brand-neutral flex">
       {/* HR Sidebar */}
-      <aside className="w-64 bg-indigo-900 text-indigo-200 flex flex-col">
-        <div className="p-6 text-brand-white font-bold text-xl tracking-tight border-b border-indigo-800">
+      <aside className="w-64 bg-brand-black text-brand-white/85 flex flex-col">
+        <div className="p-6 text-brand-white font-bold text-xl tracking-tight border-b border-brand-gray/20">
           HR Partner Portal
         </div>
         <nav className="flex-1 p-4 space-y-2">
-          <button onClick={() => setActiveTab('overview')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full ${activeTab === 'overview' ? 'bg-indigo-800 text-brand-white' : 'hover:bg-indigo-800 hover:text-brand-white'}`}>
+          <button onClick={() => setActiveTab('overview')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full ${activeTab === 'overview' ? 'bg-brand-green text-brand-white' : 'hover:bg-brand-gray/20 hover:text-brand-white'}`}>
             <LayoutDashboard className="w-5 h-5" /> Dashboard
           </button>
-          <button onClick={() => setActiveTab('discovery')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full ${activeTab === 'discovery' ? 'bg-indigo-800 text-brand-white' : 'hover:bg-indigo-800 hover:text-brand-white'}`}>
+          <button onClick={() => setActiveTab('discovery')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full ${activeTab === 'discovery' ? 'bg-brand-green text-brand-white' : 'hover:bg-brand-gray/20 hover:text-brand-white'}`}>
             <Search className="w-5 h-5" /> Discover Talent
           </button>
-          <button onClick={() => setActiveTab('shortlisted')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left ${activeTab === 'shortlisted' ? 'bg-indigo-800 text-brand-white' : 'hover:bg-indigo-800 hover:text-brand-white'}`}>
+          <button onClick={() => setActiveTab('shortlisted')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left ${activeTab === 'shortlisted' ? 'bg-brand-green text-brand-white' : 'hover:bg-brand-gray/20 hover:text-brand-white'}`}>
             <UserCheck className="w-5 h-5" /> Shortlisted
           </button>
-          <button onClick={() => setActiveTab('opportunities')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left ${activeTab === 'opportunities' ? 'bg-indigo-800 text-brand-white' : 'hover:bg-indigo-800 hover:text-brand-white'}`}>
+          <button onClick={() => setActiveTab('opportunities')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left ${activeTab === 'opportunities' ? 'bg-brand-green text-brand-white' : 'hover:bg-brand-gray/20 hover:text-brand-white'}`}>
             <Briefcase className="w-5 h-5" /> Opportunities
           </button>
-          <button onClick={() => setActiveTab('settings')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full ${activeTab === 'settings' ? 'bg-indigo-800 text-brand-white' : 'hover:bg-indigo-800 hover:text-brand-white'}`}>
+          <button onClick={() => setActiveTab('settings')} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full ${activeTab === 'settings' ? 'bg-brand-green text-brand-white' : 'hover:bg-brand-gray/20 hover:text-brand-white'}`}>
             <UserIcon className="w-5 h-5" /> Profile Settings
           </button>
         </nav>
-        <div className="p-4 border-t border-indigo-800">
+        <div className="p-4 border-t border-brand-gray/20">
           <button 
             onClick={logout}
-            className="flex items-center gap-2 text-indigo-300 hover:text-brand-white w-full px-4 py-2"
+            className="flex items-center gap-2 text-brand-white/85 hover:text-brand-white w-full px-4 py-2"
           >
             <LogOut className="w-5 h-5" /> Logout
           </button>
@@ -47,28 +55,24 @@ export default function HRDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 p-8">
-        <header className="mb-8 flex justify-between items-center">
+        <header className="mb-8 flex justify-between items-center border-b border-brand-gray/15 pb-6">
           <div>
             <h1 className="text-3xl font-extrabold text-brand-black">Talent Discovery</h1>
             <p className="text-brand-gray mt-1">Logged in as {user?.email}</p>
           </div>
-          <div className="bg-indigo-100 text-brand-green/90 px-4 py-2 rounded-lg font-bold text-sm">
+          <div className="bg-brand-green/10 text-brand-green px-4 py-2 rounded-lg font-bold text-sm border border-brand-green/20">
             Role: HR
           </div>
         </header>
 
         {activeTab === 'overview' ? (
           <HROverview />
-        ) : activeTab === 'discovery' ? (
-          <HRDiscovery />
-        ) : activeTab === 'shortlisted' ? (
-          <HRShortlisted />
-        ) : activeTab === 'opportunities' ? (
-          <HROpportunities />
-        ) : (
+        ) : activeTab === 'settings' ? (
           <div className="max-w-2xl">
             <ProfileSettings />
           </div>
+        ) : (
+          <TabPlaceholder />
         )}
       </main>
     </div>

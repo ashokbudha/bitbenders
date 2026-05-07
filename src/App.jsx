@@ -1,21 +1,38 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { Loader2 } from 'lucide-react';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import LoginPage from './pages/LoginPage';
-import AdminDashboard from './pages/AdminDashboard';
 import HRDashboard from './pages/HRDashboard';
+import ComingSoonPage from './pages/ComingSoonPage';
+import StudentPage from './pages/StudentPage';
 
-// Student Routes
-import { StudentProvider } from './context/StudentContext';
-import StudentDashboardLayout from './components/StudentDashboardLayout';
-import RoleSelectionPage from './pages/RoleSelectionPage';
-import CareerExplorerPage from './pages/CareerExplorerPage';
-import OverviewPage from './pages/OverviewPage';
-import LearningPage from './pages/LearningPage';
-import ProjectsPage from './pages/ProjectsPage';
-import ProfilePage from './pages/ProfilePage';
-import OpportunitiesPage from './pages/OpportunitiesPage';
+function RoleHomeRedirect() {
+  const { isAuthenticated, isLoading, role } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-brand-neutral">
+        <Loader2 className="w-10 h-10 animate-spin text-brand-green" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (role === 'hr') {
+    return <Navigate to="/hr" replace />;
+  }
+
+  if (role === 'student') {
+    return <Navigate to="/student" replace />;
+  }
+
+  return <Navigate to="/coming-soon" replace />;
+}
 
 function App() {
   return (
@@ -24,36 +41,20 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Admin Dashboard - Protected */}
-          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Route>
-
-          {/* HR Dashboard - Protected */}
           <Route element={<ProtectedRoute allowedRoles={['hr']} />}>
             <Route path="/hr" element={<HRDashboard />} />
           </Route>
 
-          {/* Student Dashboard - Protected */}
           <Route element={<ProtectedRoute allowedRoles={['student']} />}>
-            <Route path="/dashboard" element={
-              <StudentProvider>
-                <StudentDashboardLayout />
-              </StudentProvider>
-            }>
-              <Route index element={<OverviewPage />} />
-              <Route path="setup" element={<RoleSelectionPage />} />
-              <Route path="explore" element={<CareerExplorerPage />} />
-              <Route path="learning" element={<LearningPage />} />
-              <Route path="projects" element={<ProjectsPage />} />
-              <Route path="opportunities" element={<OpportunitiesPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-            </Route>
+            <Route path="/student" element={<StudentPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="/coming-soon" element={<ComingSoonPage />} />
           </Route>
           
-          {/* Default Redirects */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<RoleHomeRedirect />} />
+          <Route path="*" element={<RoleHomeRedirect />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

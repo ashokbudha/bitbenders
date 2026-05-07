@@ -18,18 +18,21 @@ export default function ProtectedRoute({ allowedRoles }) {
   }
 
   if (!isAuthenticated) {
-    // Redirect to login, but save the intended location
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(role)) {
-    // Route role-based fallback logic
-    // If they are unauthorized, send them to their own dashboard
-    if (role === 'admin') return <Navigate to="/admin" replace />;
-    if (role === 'hr') return <Navigate to="/hr" replace />;
-    return <Navigate to="/dashboard" replace />;
+    if (role === 'hr') {
+      return <Navigate to="/hr" replace />;
+    }
+    if (role === 'student') {
+      return <Navigate to="/student" replace />;
+    }
+    if (role === 'admin') {
+      return <Navigate to="/coming-soon" replace />;
+    }
+    return <Navigate to="/login" replace />;
   }
 
-  // They are authenticated and have the right role
   return <Outlet />;
 }

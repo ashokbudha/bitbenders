@@ -1,29 +1,29 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, Loader2, ShieldAlert, GraduationCap, Briefcase, Key } from 'lucide-react';
+import { Lock, User, Loader2, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage() {
-  const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState('student');
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { login, register } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname;
 
   const handleAuthSuccess = (role) => {
-    if (from) {
+    if (from && role === 'hr') {
       navigate(from, { replace: true });
+    } else if (role === 'hr') {
+      navigate('/hr', { replace: true });
+    } else if (role === 'student') {
+      navigate('/student', { replace: true });
     } else {
-      if (role === 'admin') navigate('/admin', { replace: true });
-      else if (role === 'hr') navigate('/hr', { replace: true });
-      else navigate('/dashboard', { replace: true });
+      navigate('/coming-soon', { replace: true });
     }
   };
 
@@ -33,30 +33,10 @@ export default function LoginPage() {
     setError(null);
     
     try {
-      let role;
-      if (isLoginMode) {
-        role = await login({ email, password });
-      } else {
-        role = await register({ email, password, role: selectedRole });
-      }
+      const role = await login({ email, password });
       handleAuthSuccess(role);
     } catch (err) {
-      setError(err.message || 'Authentication failed. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleQuickDemo = async (role) => {
-    // A quick bypass strictly for demo purposes
-    setIsSubmitting(true);
-    try {
-      // Create a random unique email for the demo session
-      const demoEmail = `demo_${role}_${Math.floor(Math.random() * 1000)}@example.com`;
-      await register({ email: demoEmail, password: 'password', role });
-      handleAuthSuccess(role);
-    } catch (err) {
-      setError('Demo login failed.');
+      setError(err.response?.data?.error || 'Authentication failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -69,30 +49,12 @@ export default function LoginPage() {
           <Lock className="h-7 w-7 text-brand-white" />
         </div>
         <h2 className="mt-4 text-center text-3xl font-extrabold text-brand-black tracking-tight">
-          {isLoginMode ? 'Welcome back' : 'Create your account'}
+          Welcome back
         </h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-brand-white py-8 px-4 shadow-xl shadow-brand-gray/20/50 sm:rounded-2xl sm:px-10 border border-brand-gray/10">
-          
-          {/* Mode Toggle */}
-          <div className="flex p-1 bg-brand-gray/10 rounded-xl mb-8">
-            <button
-              type="button"
-              onClick={() => setIsLoginMode(true)}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${isLoginMode ? 'bg-brand-white text-brand-green/90 shadow-sm' : 'text-brand-gray hover:text-brand-gray'}`}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsLoginMode(false)}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isLoginMode ? 'bg-brand-white text-brand-green/90 shadow-sm' : 'text-brand-gray hover:text-brand-gray'}`}
-            >
-              Register
-            </button>
-          </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
@@ -101,39 +63,6 @@ export default function LoginPage() {
                 <p>{error}</p>
               </div>
             )}
-            
-            {!isLoginMode && (
-              <div className="space-y-3 mb-6">
-                <label className="block text-sm font-bold text-brand-gray">I am joining as a:</label>
-                <div className="grid grid-cols-3 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('student')}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'student' ? 'border-brand-green bg-brand-green/10 text-brand-green/90' : 'border-brand-gray/20 bg-brand-white text-brand-gray hover:border-indigo-300'}`}
-                  >
-                    <GraduationCap className="w-6 h-6 mb-1" />
-                    <span className="text-xs font-bold">Student</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('hr')}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'hr' ? 'border-brand-green bg-brand-green/10 text-brand-green/90' : 'border-brand-gray/20 bg-brand-white text-brand-gray hover:border-indigo-300'}`}
-                  >
-                    <Briefcase className="w-6 h-6 mb-1" />
-                    <span className="text-xs font-bold">HR / Co.</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRole('admin')}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${selectedRole === 'admin' ? 'border-brand-green bg-brand-green/10 text-brand-green/90' : 'border-brand-gray/20 bg-brand-white text-brand-gray hover:border-indigo-300'}`}
-                  >
-                    <Key className="w-6 h-6 mb-1" />
-                    <span className="text-xs font-bold">Admin</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
             <div>
               <label className="block text-sm font-bold text-brand-gray mb-1">Email address</label>
               <div className="relative rounded-xl shadow-sm">
@@ -173,34 +102,15 @@ export default function LoginPage() {
               disabled={isSubmitting}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-brand-white bg-brand-green hover:bg-brand-green/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-green disabled:opacity-70 transition-colors mt-6"
             >
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLoginMode ? 'Sign In securely' : 'Create Account')}
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In securely'}
             </button>
           </form>
 
-        </div>
-
-        {/* Development / Demo Mode Selector */}
-        <div className="mt-8 border-2 border-dashed border-amber-300 bg-brand-green/10 rounded-2xl p-6">
-          <div className="flex items-center gap-2 mb-4 text-amber-800">
-            <ShieldAlert className="w-5 h-5" />
-            <h3 className="font-bold text-sm uppercase tracking-wider">Demo / Testing Mode</h3>
-          </div>
-          <p className="text-xs text-amber-700 mb-4">
-            Since the backend is mocked locally, you can bypass registration and instantly log in to any dashboard to test RBAC logic.
+          <p className="mt-5 text-xs text-brand-gray">
+            Demo note: HR users can access the hiring dashboard. Student users land on a minimal student profile page.
           </p>
-          <div className="flex flex-wrap gap-2">
-            <button onClick={() => handleQuickDemo('student')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-brand-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
-              Test Student
-            </button>
-            <button onClick={() => handleQuickDemo('hr')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-brand-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
-              Test HR
-            </button>
-            <button onClick={() => handleQuickDemo('admin')} disabled={isSubmitting} className="flex-1 py-2 px-3 bg-brand-white border border-amber-200 text-amber-900 text-xs font-bold rounded-lg hover:bg-amber-100 transition-colors">
-              Test Admin
-            </button>
-          </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );

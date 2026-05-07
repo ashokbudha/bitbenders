@@ -1,147 +1,127 @@
-import { useState } from 'react';
-import { JOBS, ROLES, ROADMAPS } from '../data/mockData';
-import { PlusCircle, Building, MapPin, Edit3, Trash2, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import api from '../api/axios';
+import DataCard from './hr/DataCard';
+import DataTable from './hr/DataTable';
+import EmptyState from './hr/EmptyState';
+
+const toNumber = (value) => Number.parseFloat(value || 0);
+
+const getSuggestedAction = (avgReadiness) => {
+  const score = toNumber(avgReadiness);
+  if (score < 60) {
+    return 'Increase sourcing for this role and expand outreach channels.';
+  }
+  if (score < 75) {
+    return 'Boost shortlist quality with targeted screening and coaching.';
+  }
+  return 'High readiness pool. Prioritize interviews and move candidates faster.';
+};
 
 export default function HROpportunities() {
-  const [opportunities, setOpportunities] = useState(JOBS);
-  const [isCreating, setIsCreating] = useState(false);
+  const [opportunities, setOpportunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [formData, setFormData] = useState({
-    title: '',
-    roleId: 'frontend-dev',
-    type: 'internship',
-    location: '',
-    expectations: '',
-    requiredCoursesCount: 0,
-    requiredProjectsCount: 0,
-    skills: ''
-  });
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newJob = {
-      id: Date.now(),
-      company: 'Your Company', // Hardcoded for MVP, would normally come from HR context
-      ...formData,
-      requirements: { 
-        courses: ROADMAPS[formData.roleId]?.slice(0, formData.requiredCoursesCount).map(c => c.id) || [], 
-        projects: parseInt(formData.requiredProjectsCount), 
-        skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean) 
+        const response = await api.get('/api/opportunities');
+        setOpportunities(Array.isArray(response.data) ? response.data : []);
+      } catch (requestError) {
+        console.error('Failed to load opportunities', requestError);
+        setOpportunities([]);
+        setError(requestError.response?.data?.error || 'Could not load opportunities.');
+      } finally {
+        setLoading(false);
       }
     };
-    setOpportunities([newJob, ...opportunities]);
-    setIsCreating(false);
-    setFormData({ title: '', roleId: 'frontend-dev', type: 'internship', location: '', expectations: '', requiredCoursesCount: 0, requiredProjectsCount: 0, skills: '' });
-  };
+
+    fetchOpportunities();
+  }, []);
+
+  const metrics = useMemo(() => {
+    const rolesTracked = opportunities.length;
+    const totalCandidates = opportunities.reduce((sum, row) => sum + Number.parseInt(row.candidate_count || 0, 10), 0);
+    const averageReadiness =
+      rolesTracked > 0
+        ? (
+            opportunities.reduce((sum, row) => sum + toNumber(row.avg_readiness), 0) /
+            rolesTracked
+          ).toFixed(1)
+        : '0.0';
+
+    return { rolesTracked, totalCandidates, averageReadiness };
+  }, [opportunities]);
+
+  const rows = useMemo(
+    () =>
+      opportunities.map((entry) => ({
+        ...entry,
+        suggested_action: getSuggestedAction(entry.avg_readiness),
+      })),
+    [opportunities]
+  );
+
+  const columns = [
+    {
+      key: 'role',
+      label: 'Role',
+      render: (row) => <span className="font-semibold text-brand-black">{row.role}</span>,
+    },
+    {
+      key: 'candidate_count',
+      label: 'Candidate Count',
+      headerClassName: 'text-right',
+      cellClassName: 'text-right font-semibold text-brand-black',
+    },
+    {
+      key: 'avg_readiness',
+      label: 'Avg Readiness',
+      headerClassName: 'text-right',
+      cellClassName: 'text-right font-semibold text-brand-black',
+      render: (row) => `${toNumber(row.avg_readiness).toFixed(1)}%`,
+    },
+    {
+      key: 'suggested_action',
+      label: 'Suggested Action',
+      render: (row) => <span className="text-brand-gray">{row.suggested_action}</span>,
+    },
+  ];
+
+  const hasNoResults = !loading && !error && rows.length === 0;
 
   return (
-    <div className="animate-in fade-in duration-300">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h2 className="text-2xl font-bold text-brand-black">Manage Opportunities</h2>
-          <p className="text-brand-gray">Post internships, traineeships, and junior roles.</p>
-        </div>
-        <button 
-          onClick={() => setIsCreating(!isCreating)}
-          className="flex items-center gap-2 px-4 py-2 bg-brand-green text-brand-white font-medium rounded-xl hover:bg-brand-green/90 transition-colors"
-        >
-          <PlusCircle className="w-5 h-5" /> Post Opportunity
-        </button>
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div>
+        <h2 className="text-2xl font-bold text-brand-black">Opportunities</h2>
+        <p className="text-sm text-brand-gray">Role demand and readiness trends derived from live candidate data.</p>
       </div>
 
-      {isCreating && (
-        <div className="bg-brand-white rounded-2xl border border-brand-gray/20 shadow-sm p-6 mb-8">
-          <h3 className="text-lg font-bold text-brand-black mb-4">Post New Opportunity</h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-brand-gray mb-1">Opportunity Title</label>
-                <input required type="text" name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none" placeholder="e.g. Frontend Intern" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-brand-gray mb-1">Target Career Path</label>
-                <select name="roleId" value={formData.roleId} onChange={handleChange} className="w-full px-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none bg-brand-white">
-                  {ROLES.map(r => <option key={r.id} value={r.id}>{r.title}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-brand-gray mb-1">Type</label>
-                <select name="type" value={formData.type} onChange={handleChange} className="w-full px-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none bg-brand-white">
-                  <option value="internship">Internship</option>
-                  <option value="trainee">Trainee</option>
-                  <option value="junior">Junior Role</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-brand-gray mb-1">Location / Work Mode</label>
-                <input required type="text" name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none" placeholder="e.g. Kathmandu (Hybrid)" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-brand-gray mb-1">Expectations & Description</label>
-              <textarea required name="expectations" value={formData.expectations} onChange={handleChange} rows="2" className="w-full px-4 py-2 border border-brand-gray/40 rounded-xl focus:ring-2 focus:ring-brand-green outline-none" placeholder="What should the candidate know?"></textarea>
-            </div>
-            <div className="bg-brand-neutral p-4 rounded-xl border border-brand-gray/20">
-              <h4 className="font-semibold text-brand-black mb-3 text-sm">Readiness Requirements (Used for Matching)</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-brand-gray mb-1">Required Courses (0 to {ROADMAPS[formData.roleId]?.length || 0})</label>
-                  <input type="number" min="0" max={ROADMAPS[formData.roleId]?.length || 0} name="requiredCoursesCount" value={formData.requiredCoursesCount} onChange={handleChange} className="w-full px-3 py-1.5 text-sm border border-brand-gray/40 rounded-lg outline-none" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-brand-gray mb-1">Required Capstone Projects</label>
-                  <input type="number" min="0" max="1" name="requiredProjectsCount" value={formData.requiredProjectsCount} onChange={handleChange} className="w-full px-3 py-1.5 text-sm border border-brand-gray/40 rounded-lg outline-none" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-brand-gray mb-1">Skill Tags (comma separated)</label>
-                  <input type="text" name="skills" value={formData.skills} onChange={handleChange} className="w-full px-3 py-1.5 text-sm border border-brand-gray/40 rounded-lg outline-none" placeholder="React, Git" />
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <button type="button" onClick={() => setIsCreating(false)} className="px-4 py-2 text-brand-gray font-medium hover:bg-brand-gray/10 rounded-xl transition-colors">Cancel</button>
-              <button type="submit" className="px-6 py-2 bg-brand-green text-brand-white font-medium rounded-xl hover:bg-brand-green/90 transition-colors shadow-sm">Publish Opportunity</button>
-            </div>
-          </form>
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <DataCard title="Roles Tracked" value={metrics.rolesTracked} hint="Roles with active candidates in pipeline" />
+        <DataCard title="Candidates Across Roles" value={metrics.totalCandidates} hint="Total candidate volume across all roles" />
+        <DataCard title="Overall Avg Readiness" value={`${metrics.averageReadiness}%`} hint="Average readiness across all tracked roles" />
+      </div>
+
+      {hasNoResults ? (
+        <EmptyState
+          title="No role opportunities available"
+          description="Once candidates are tracked, role-level opportunities will appear here."
+        />
+      ) : (
+        <DataTable
+          columns={columns}
+          rows={rows}
+          rowKey="role"
+          loading={loading}
+          error={error}
+          emptyTitle="No opportunities found"
+          emptyDescription="The opportunities dataset is currently empty."
+        />
       )}
-
-      <div className="space-y-4">
-        {opportunities.map(job => (
-          <div key={job.id} className="bg-brand-white rounded-2xl border border-brand-gray/20 shadow-sm p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-gray/10 text-brand-gray mb-2">
-                {job.type}
-              </span>
-              <h4 className="text-lg font-bold text-brand-black">{job.title}</h4>
-              <div className="flex items-center gap-4 text-brand-gray text-sm mt-1">
-                <span className="flex items-center gap-1.5"><Building className="w-4 h-4" /> {job.company}</span>
-                <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {job.location}</span>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {job.requirements?.skills.map((skill, idx) => (
-                  <span key={idx} className="bg-brand-neutral border border-brand-gray/20 text-brand-gray text-xs font-semibold px-2 py-0.5 rounded">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-              <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-brand-green bg-brand-green/10 hover:bg-indigo-100 rounded-xl flex-1 md:flex-none transition-colors">
-                <Users className="w-4 h-4" /> View Matches
-              </button>
-              <button className="p-2 text-brand-gray/60 border border-brand-gray/20 hover:bg-brand-neutral hover:text-brand-gray rounded-xl transition-colors">
-                <Edit3 className="w-4 h-4" />
-              </button>
-              <button className="p-2 text-red-400 border border-brand-gray/20 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors">
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

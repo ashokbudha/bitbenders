@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import HRDashboard from './pages/HRDashboard';
 import ComingSoonPage from './pages/ComingSoonPage';
 import StudentPage from './pages/StudentPage';
+import AdminPage from './pages/AdminPage';
 
 function RoleHomeRedirect() {
   const { isAuthenticated, isLoading, role } = useAuth();
@@ -31,6 +32,10 @@ function RoleHomeRedirect() {
     return <Navigate to="/student" replace />;
   }
 
+  if (role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+
   return <Navigate to="/coming-soon" replace />;
 }
 
@@ -47,6 +52,10 @@ function App() {
 
           <Route element={<ProtectedRoute allowedRoles={['student']} />}>
             <Route path="/student" element={<StudentPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

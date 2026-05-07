@@ -11,7 +11,21 @@ export const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  } catch (err) {
+  } catch {
     return res.status(403).json({ error: 'Forbidden: Invalid token' });
   }
+};
+
+export const requireRole = (allowedRoles = []) => {
+  return (req, res, next) => {
+    if (!req.user?.role) {
+      return res.status(403).json({ error: 'Forbidden: Missing role context' });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Forbidden: Insufficient role permissions' });
+    }
+
+    next();
+  };
 };

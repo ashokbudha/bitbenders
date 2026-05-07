@@ -4,8 +4,6 @@ import { getRole, getToken, logout as clearStoredAuth, setAuthSession } from '..
 
 const AuthContext = createContext();
 
-// Hook is colocated with provider for auth module ergonomics.
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -72,6 +70,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signup = async (credentials) => {
+    try {
+      const response = await api.post('/auth/register', credentials);
+      setAuthSession(response.data.token, response.data.user.role);
+      if (import.meta.env.DEV) {
+        console.info('Auth token received:', response.data.token);
+      }
+      setUser(response.data.user);
+      setRole(response.data.user.role);
+      setIsAuthenticated(true);
+      return response.data.user.role;
+    } catch (error) {
+      console.error('Signup error', error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     setUser(null);
     setRole(null);
@@ -80,7 +95,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, isAuthenticated, isLoading, login, logout, fetchUser }}>
+    <AuthContext.Provider value={{ user, role, isAuthenticated, isLoading, login, signup, logout, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );
